@@ -21,7 +21,7 @@ const eslintConfig = [
 			prettier: eslintPluginPrettier,
 		},
 		rules: {
-			'prettier/prettier': 'error',
+			'prettier/prettier': ['error', { endOfLine: 'auto' }],
 		},
 	},
 ];
