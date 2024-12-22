@@ -31,22 +31,63 @@ const User = sequelize.define(
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
+		username: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		firstName: {
+			type: DataTypes.STRING,
+		},
+		lastName: {
+			type: DataTypes.STRING,
+		},
 	},
 	{
 		timestamps: false,
 	}
 );
 
-sequelize.sync();
-
-app.listen(PORT, () => {
-	console.log(`it's alive on http://localhost:${PORT}`);
+// Reviews model
+const Review = sequelize.define('Review', {
+	id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	userId: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+		// references: {
+		// 	model: User,
+		// 	key: 'id',
+		// },
+	},
+	productId: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
+	text: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
 });
+
+sequelize
+	.sync({ force: true })
+	.then(() => {
+		console.log('Database & tables created!');
+		app.listen(PORT, () => {
+			console.log(`it's alive on http://localhost:${PORT}`);
+		});
+	})
+	.catch(error => {
+		console.error('Error creating database & tables:', error);
+	});
 
 // Register
 app.post('/api/register', async (req, res) => {
 	try {
-		const { email, password } = req.body;
+		const { email, password, username, firstName, lastName } = req.body;
 		const userExists = await User.findOne({ where: { email } });
 		if (userExists) {
 			return res.status(400).send('User already exists');
@@ -55,6 +96,9 @@ app.post('/api/register', async (req, res) => {
 		const user = await User.create({
 			email,
 			password: hashedPassword,
+			username,
+			firstName,
+			lastName,
 		});
 		res.status(201).json(user.id);
 	} catch (error) {
@@ -84,6 +128,45 @@ app.post('/api/login', async (req, res) => {
 		} else {
 			res.status(401).send('Unauthorized');
 		}
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+// Get all reviews
+app.get('/api/reviews', async (req, res) => {
+	try {
+		const reviews = await Review.findAll();
+		res.status(200).json(reviews);
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+// Get reviews by product id
+app.get('/api/reviews/:productId', async (req, res) => {
+	try {
+		const reviews = await Review.findAll({
+			where: {
+				productId: req.params.productId,
+			},
+		});
+		res.status(200).json(reviews);
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+// Create review
+app.post('/api/reviews', async (req, res) => {
+	try {
+		const { userId, productId, text } = req.body;
+		const review = await Review.create({
+			userId,
+			productId,
+			text,
+		});
+		res.status(201).json(review);
 	} catch (error) {
 		res.status(500).send('Internal Server Error');
 	}

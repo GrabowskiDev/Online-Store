@@ -11,7 +11,8 @@ Content-Type: application/json
 
 {
 	"email": "admin@corporation.com",
-	"password": "password"
+	"password": "password",
+	"username": "Krzeselko"
 }
 
 ####################################
@@ -24,4 +25,23 @@ Content-Type: application/json
 {
 	"email": "admin@corporation.com",
 	"password": "password"
+}
+
+
+####################################
+# Get all reviews
+####################################
+GET http://127.0.0.1:3001/api/reviews
+
+
+####################################
+# Create review
+####################################
+POST http://127.0.0.1:3001/api/reviews
+Content-Type: application/json
+
+{
+	"userId": "1",
+	"productId": "1",
+	"text": "This is a great product"
 }
