@@ -57,10 +57,10 @@ const Review = sequelize.define('Review', {
 	userId: {
 		type: DataTypes.INTEGER,
 		allowNull: false,
-		// references: {
-		// 	model: User,
-		// 	key: 'id',
-		// },
+		references: {
+			model: User,
+			key: 'id',
+		},
 	},
 	productId: {
 		type: DataTypes.INTEGER,
@@ -68,6 +68,30 @@ const Review = sequelize.define('Review', {
 	},
 	text: {
 		type: DataTypes.STRING,
+		allowNull: false,
+	},
+});
+
+const Cart = sequelize.define('Cart', {
+	id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	userId: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+		references: {
+			model: User,
+			key: 'id',
+		},
+	},
+	productId: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
+	quantity: {
+		type: DataTypes.INTEGER,
 		allowNull: false,
 	},
 });
@@ -83,6 +107,20 @@ sequelize
 	.catch(error => {
 		console.error('Error creating database & tables:', error);
 	});
+
+function verifyToken(req, res, next) {
+	const token = req.header('Authorization');
+	if (!token)
+		return res.status(403).json('A token is required for authentication');
+	try {
+		const decoded = jwt.verify(token.split(' ')[1], process.env.SECRET_KEY);
+		req.userId = decoded.id;
+		req.email = decoded.email;
+		next();
+	} catch (error) {
+		res.status(401).json('Invalid token');
+	}
+}
 
 // Register
 app.post('/api/register', async (req, res) => {
@@ -133,6 +171,27 @@ app.post('/api/login', async (req, res) => {
 	}
 });
 
+// Change password
+app.put('/api/change-password', verifyToken, async (req, res) => {
+	try {
+		const user = await User.findByPk(req.userId);
+		const isPasswordCorrect = await bcrypt.compare(
+			req.body.oldPassword,
+			user.password
+		);
+		if (isPasswordCorrect) {
+			const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+			user.password = hashedPassword;
+			await user.save();
+			res.status(204).send();
+		} else {
+			res.status(401).send('Unauthorized');
+		}
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
 // Get all reviews
 app.get('/api/reviews', async (req, res) => {
 	try {
@@ -144,7 +203,7 @@ app.get('/api/reviews', async (req, res) => {
 });
 
 // Get reviews by product id
-app.get('/api/reviews/:productId', async (req, res) => {
+app.get('/api/reviews/product/:productId', async (req, res) => {
 	try {
 		const reviews = await Review.findAll({
 			where: {
@@ -157,10 +216,25 @@ app.get('/api/reviews/:productId', async (req, res) => {
 	}
 });
 
-// Create review
-app.post('/api/reviews', async (req, res) => {
+// Get reviews by user id
+app.get('/api/reviews/user/:userId', async (req, res) => {
 	try {
-		const { userId, productId, text } = req.body;
+		const reviews = await Review.findAll({
+			where: {
+				userId: req.params.userId,
+			},
+		});
+		res.status(200).json(reviews);
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+// Create review
+app.post('/api/reviews', verifyToken, async (req, res) => {
+	try {
+		const { productId, text } = req.body;
+		const userId = req.userId;
 		const review = await Review.create({
 			userId,
 			productId,
@@ -171,3 +245,54 @@ app.post('/api/reviews', async (req, res) => {
 		res.status(500).send('Internal Server Error');
 	}
 });
+
+// Add product to cart
+app.post('/api/cart', verifyToken, async (req, res) => {
+	try {
+		const { productId, quantity } = req.body;
+		const userId = req.userId;
+		const cart = await Cart.findOne({
+			where: {
+				userId,
+				productId,
+			},
+		});
+
+		if (cart) {
+			cart.quantity += quantity;
+			await cart.save();
+		} else {
+			const cart = await Cart.create({
+				userId,
+				productId,
+				quantity,
+			});
+		}
+		res.status(201).json(cart);
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+// Delete product from cart
+app.delete('/api/cart/:id', verifyToken, async (req, res) => {
+	try {
+		const cart = await Cart.findOne({
+			where: {
+				id: req.params.id,
+				userId: req.userId,
+			},
+		});
+		if (!cart) {
+			return res.status(404).send('Cart not found');
+		}
+		await cart.destroy();
+		res.status(204).send();
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+// Modify product quantity in cart
+
+// Get cart by user id
