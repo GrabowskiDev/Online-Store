@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import styles from './page.module.css';
-import { HeaderMegaMenu } from './ui/HeaderMegaMenu';
-import { UserButton } from './ui/UserButton';
-import { FooterSimple } from './ui/FooterSimple';
+import { HeaderMegaMenu } from '../ui/HeaderMegaMenu';
+import { UserButton } from '../ui/UserButton';
+import { FooterSimple } from '../ui/FooterSimple';
 
 export default function Home() {
 	return (
