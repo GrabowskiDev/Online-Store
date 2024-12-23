@@ -104,7 +104,7 @@ sequelize
 			console.log(`it's alive on http://localhost:${PORT}`);
 		});
 	})
-	.catch(error => {
+	.catch((error) => {
 		console.error('Error creating database & tables:', error);
 	});
 
@@ -123,21 +123,21 @@ function verifyToken(req, res, next) {
 }
 
 const deleteProductFromCart = async (req, res) => {
-    try {
-        const cart = await Cart.findOne({
-            where: {
-                id: req.params.id,
-                userId: req.userId,
-            },
-        });
-        if (!cart) {
-            return res.status(404).send('Product not found in the cart!');
-        }
-        await cart.destroy();
-        res.status(204).send();
-    } catch (error) {
-        res.status(500).send('Internal Server Error');
-    }
+	try {
+		const cart = await Cart.findOne({
+			where: {
+				id: req.params.id,
+				userId: req.userId,
+			},
+		});
+		if (!cart) {
+			return res.status(404).send('Product not found in the cart!');
+		}
+		await cart.destroy();
+		res.status(204).send();
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
 };
 
 // Register
@@ -170,10 +170,7 @@ app.post('/api/login', async (req, res) => {
 				email: req.body.email,
 			},
 		});
-		isPasswordCorrect = await bcrypt.compare(
-			req.body.password,
-			user.password
-		);
+		isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
 		if (user && isPasswordCorrect) {
 			const token = jwt.sign(
 				{ id: user.id, email: user.email },
@@ -294,23 +291,21 @@ app.post('/api/cart', verifyToken, async (req, res) => {
 
 // Delete product from cart
 app.delete(
-	'/api/cart/:id', 
-	verifyToken, 
+	'/api/cart/:id',
+	verifyToken,
 	deleteProductFromCart // <-- zdefiniowane linijka 125
 );
 
 // Modify product quantity in cart
 app.put('/api/cart/:id', verifyToken, async (req, res) => {
 	try {
-		
 		const quantity = req.body.quantity;
-		
-		if(quantity === 0){
+
+		if (quantity === 0) {
 			return deleteProductFromCart(req, res);
-		}else if(quantity < 0){
+		} else if (quantity < 0) {
 			return res.status(400).send('Quantity can not be negative');
-		}
-		else{
+		} else {
 			const cart = await Cart.findOne({
 				where: {
 					id: req.params.id,
@@ -324,7 +319,6 @@ app.put('/api/cart/:id', verifyToken, async (req, res) => {
 			await cart.save();
 			res.status(204).send();
 		}
-		
 	} catch (error) {
 		res.status(500).send('Internal Server Error');
 	}
@@ -339,12 +333,11 @@ app.get('/api/cart', verifyToken, async (req, res) => {
 			},
 		});
 
-		if(!cart) {
+		if (!cart) {
 			return res.status(404).send('Cart is empty');
-		}else{
+		} else {
 			res.status(200).json(cart);
 		}
-
 	} catch (error) {
 		res.status(500).send('Internal Server Error');
 	}
