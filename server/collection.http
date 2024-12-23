@@ -11,7 +11,10 @@ Content-Type: application/json
 
 {
 	"email": "admin@corporation.com",
-	"password": "password"
+	"password": "password",
+	"username": "Krzeselko",
+	"firstName": "Jan",
+	"lastName": "Kowalski"
 }
 
 ####################################
@@ -22,6 +25,41 @@ POST http://127.0.0.1:3001/api/login
 Content-Type: application/json
 
 {
-	"email": "admin@corporation.com",
-	"password": "password"
+	"login": "Krzeselko",
+	"password": "password2"
+}
+
+####################################
+# Get user info
+####################################
+GET http://127.0.0.1:3001/api/user/1
+
+####################################
+# Change Password
+####################################
+PUT http://127.0.0.1:3001/api/change-password
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"oldPassword": "password",
+	"newPassword": "password2"
+}
+
+####################################
+# Get all reviews
+####################################
+GET http://127.0.0.1:3001/api/reviews
+
+
+####################################
+# Create review
+####################################
+POST http://127.0.0.1:3001/api/reviews
+Content-Type: application/json
+
+{
+	"userId": "1",
+	"productId": "1",
+	"text": "This is a great product"
 }
