@@ -26,9 +26,25 @@ Content-Type: application/json
 
 {
 	"login": "Krzeselko",
-	"password": "password"
+	"password": "password2"
 }
 
+####################################
+# Get user info
+####################################
+GET http://127.0.0.1:3001/api/user/1
+
+####################################
+# Change Password
+####################################
+PUT http://127.0.0.1:3001/api/change-password
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"oldPassword": "password",
+	"newPassword": "password2"
+}
 
 ####################################
 # Get all reviews

@@ -198,16 +198,31 @@ app.post('/api/login', async (req, res) => {
 	}
 });
 
+// Get basic user info
+app.get('/api/user/:id', async (req, res) => {
+	try {
+		const user = await User.findByPk(req.params.id);
+		if (!user) {
+			return res.status(404).send('User not found');
+		}
+		res.status(200).json({
+			username: user.username,
+			firstName: user.firstName,
+			lastName: user.lastName,
+		});
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
 // Change password
 app.put('/api/change-password', verifyToken, async (req, res) => {
 	try {
+		const { oldPassword, newPassword } = req.body;
 		const user = await User.findByPk(req.userId);
-		const isPasswordCorrect = await bcrypt.compare(
-			req.body.oldPassword,
-			user.password
-		);
+		const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
 		if (isPasswordCorrect) {
-			const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+			const hashedPassword = await bcrypt.hash(newPassword, 10);
 			user.password = hashedPassword;
 			await user.save();
 			res.status(204).send();
