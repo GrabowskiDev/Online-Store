@@ -12,7 +12,9 @@ Content-Type: application/json
 {
 	"email": "admin@corporation.com",
 	"password": "password",
-	"username": "Krzeselko"
+	"username": "Krzeselko",
+	"firstName": "Jan",
+	"lastName": "Kowalski"
 }
 
 ####################################
@@ -23,7 +25,7 @@ POST http://127.0.0.1:3001/api/login
 Content-Type: application/json
 
 {
-	"email": "admin@corporation.com",
+	"login": "Krzeselko",
 	"password": "password"
 }
 

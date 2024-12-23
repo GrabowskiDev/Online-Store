@@ -34,6 +34,7 @@ const User = sequelize.define(
 		username: {
 			type: DataTypes.STRING,
 			allowNull: false,
+			unique: true,
 		},
 		firstName: {
 			type: DataTypes.STRING,
@@ -144,9 +145,13 @@ const deleteProductFromCart = async (req, res) => {
 app.post('/api/register', async (req, res) => {
 	try {
 		const { email, password, username, firstName, lastName } = req.body;
-		const userExists = await User.findOne({ where: { email } });
-		if (userExists) {
-			return res.status(400).send('User already exists');
+		const userEmailExists = await User.findOne({ where: { email } });
+		const userUsernameExists = await User.findOne({ where: { username } });
+		if (userEmailExists) {
+			return res.status(400).send('User with this email already exists');
+		}
+		if (userUsernameExists) {
+			return res.status(400).send('User with this username already exists');
 		}
 		hashedPassword = await bcrypt.hash(password, 10);
 		const user = await User.create({
@@ -165,13 +170,20 @@ app.post('/api/register', async (req, res) => {
 // Login
 app.post('/api/login', async (req, res) => {
 	try {
-		const user = await User.findOne({
-			where: {
-				email: req.body.email,
-			},
+		const { login } = req.body;
+		let user = await User.findOne({
+			where: { email: login },
 		});
+		if (!user) {
+			user = await User.findOne({
+				where: { username: login },
+			});
+		}
+		if (!user) {
+			return res.status(404).send('User not found');
+		}
 		isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
-		if (user && isPasswordCorrect) {
+		if (isPasswordCorrect) {
 			const token = jwt.sign(
 				{ id: user.id, email: user.email },
 				process.env.SECRET_KEY,
@@ -182,7 +194,7 @@ app.post('/api/login', async (req, res) => {
 			res.status(401).send('Unauthorized');
 		}
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
+		res.status(500).send('Internal Server Error' + error);
 	}
 });
 
