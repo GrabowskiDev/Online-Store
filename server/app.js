@@ -122,6 +122,24 @@ function verifyToken(req, res, next) {
 	}
 }
 
+const deleteProductFromCart = async (req, res) => {
+    try {
+        const cart = await Cart.findOne({
+            where: {
+                id: req.params.id,
+                userId: req.userId,
+            },
+        });
+        if (!cart) {
+            return res.status(404).send('Product not found in the cart!');
+        }
+        await cart.destroy();
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 // Register
 app.post('/api/register', async (req, res) => {
 	try {
@@ -275,24 +293,59 @@ app.post('/api/cart', verifyToken, async (req, res) => {
 });
 
 // Delete product from cart
-app.delete('/api/cart/:id', verifyToken, async (req, res) => {
+app.delete(
+	'/api/cart/:id', 
+	verifyToken, 
+	deleteProductFromCart // <-- zdefiniowane linijka 125
+);
+
+// Modify product quantity in cart
+app.put('/api/cart/:id', verifyToken, async (req, res) => {
 	try {
-		const cart = await Cart.findOne({
-			where: {
-				id: req.params.id,
-				userId: req.userId,
-			},
-		});
-		if (!cart) {
-			return res.status(404).send('Cart not found');
+		
+		const quantity = req.body.quantity;
+		
+		if(quantity === 0){
+			return deleteProductFromCart(req, res);
+		}else if(quantity < 0){
+			return res.status(400).send('Quantity can not be negative');
 		}
-		await cart.destroy();
-		res.status(204).send();
+		else{
+			const cart = await Cart.findOne({
+				where: {
+					id: req.params.id,
+					userId: req.userId,
+				},
+			});
+			if (!cart) {
+				return res.status(404).send('Product not found in the cart!');
+			}
+			cart.quantity = req.body.quantity;
+			await cart.save();
+			res.status(204).send();
+		}
+		
 	} catch (error) {
 		res.status(500).send('Internal Server Error');
 	}
 });
 
-// Modify product quantity in cart
-
 // Get cart by user id
+app.get('/api/cart', verifyToken, async (req, res) => {
+	try {
+		const cart = await Cart.findAll({
+			where: {
+				userId: req.userId,
+			},
+		});
+
+		if(!cart) {
+			return res.status(404).send('Cart is empty');
+		}else{
+			res.status(200).json(cart);
+		}
+
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
