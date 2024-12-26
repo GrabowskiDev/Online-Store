@@ -11,6 +11,7 @@ import {
 	Title,
 } from '@mantine/core';
 import { useState } from 'react';
+import Cookies from 'js-cookie';
 import classes from '../css/AuthenticationTitle.module.css';
 
 interface AuthenticationTitleProps {
@@ -43,7 +44,11 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 			const data = await response.json();
 			const { token } = data.token;
 
-			localStorage.setItem('jwt', token);
+			if (remember) {
+				Cookies.set('jwt', token, { expires: 7 }); // 7 days
+			} else {
+				Cookies.set('jwt', token); // Session cookie
+			}
 
 			console.log('Logged in');
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
