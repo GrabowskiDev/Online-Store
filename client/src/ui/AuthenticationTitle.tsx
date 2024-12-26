@@ -10,13 +10,48 @@ import {
 	TextInput,
 	Title,
 } from '@mantine/core';
+import { useState } from 'react';
 import classes from '../css/AuthenticationTitle.module.css';
 
 interface AuthenticationTitleProps {
 	onForgotPassword: () => void;
 }
 
+const SERVER_IP = 'http://localhost:3001/api';
+
 export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitleProps) {
+	const [login, setLogin] = useState('');
+	const [password, setPassword] = useState('');
+	const [remember, setRemember] = useState(false);
+	const [error, setError] = useState('');
+
+	async function handleLogin() {
+		try {
+			const response = await fetch(`${SERVER_IP}/login`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ login, password }),
+			});
+
+			if (!response.ok) {
+				setError('Invalid login or password');
+				return;
+			}
+
+			const data = await response.json();
+			const { token } = data.token;
+
+			localStorage.setItem('jwt', token);
+
+			console.log('Logged in');
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (e) {
+			setError('Something went wrong');
+		}
+	}
+
 	return (
 		<Container size={420} my={40}>
 			<Title ta="center" className={classes.title}>
@@ -30,15 +65,33 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 			</Text>
 
 			<Paper withBorder shadow="md" p={30} mt={30} radius="md">
-				<TextInput label="Email" placeholder="you@mantine.dev" required />
-				<PasswordInput label="Password" placeholder="Your password" required mt="md" />
+				<TextInput
+					label="Email"
+					placeholder="you@mantine.dev"
+					required
+					value={login}
+					onChange={(event) => setLogin(event.currentTarget.value)}
+				/>
+				<PasswordInput
+					label="Password"
+					placeholder="Your password"
+					required
+					mt="md"
+					value={password}
+					onChange={(event) => setPassword(event.currentTarget.value)}
+				/>
 				<Group justify="space-between" mt="lg">
-					<Checkbox label="Remember me" />
+					<Checkbox
+						label="Remember me"
+						checked={remember}
+						onChange={(event) => setRemember(event.currentTarget.checked)}
+					/>
 					<Anchor component="button" size="sm" onClick={onForgotPassword}>
 						Forgot password?
 					</Anchor>
 				</Group>
-				<Button fullWidth mt="xl">
+				{error && <Text color="red">{error}</Text>}
+				<Button fullWidth mt="xl" onClick={handleLogin}>
 					Sign in
 				</Button>
 			</Paper>
