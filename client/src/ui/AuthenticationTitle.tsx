@@ -58,20 +58,23 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 	}
 
 	return (
-		<Container size={420} my={40}>
+		<Container>
 			<Title ta="center" className={classes.title}>
 				Welcome back!
 			</Title>
 			<Text c="dimmed" size="sm" ta="center" mt={5}>
 				Do not have an account yet?{' '}
-				<Anchor size="sm" component="button">
+				<Anchor
+					size="sm"
+					component="button"
+					onClick={() => (window.location.href = '../register')}>
 					Create account
 				</Anchor>
 			</Text>
 
 			<Paper withBorder shadow="md" p={30} mt={30} radius="md">
 				<TextInput
-					label="Email"
+					label="Username or Email"
 					placeholder="you@mantine.dev"
 					required
 					value={login}
@@ -95,8 +98,12 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 						Forgot password?
 					</Anchor>
 				</Group>
-				{error && <Text color="red">{error}</Text>}
-				<Button fullWidth mt="xl" onClick={handleLogin}>
+				{error && (
+					<Text color="red" mt={10}>
+						{error}
+					</Text>
+				)}
+				<Button fullWidth mt={10} onClick={handleLogin}>
 					Sign in
 				</Button>
 			</Paper>

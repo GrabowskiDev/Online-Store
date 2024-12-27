@@ -10,9 +10,9 @@ POST http://127.0.0.1:3001/api/register
 Content-Type: application/json
 
 {
-	"email": "admin@corporation.com",
+	"email": "krzeselko@gmail.com",
 	"password": "password",
-	"username": "Krzeselko",
+	"username": "krzeselko",
 	"firstName": "Jan",
 	"lastName": "Kowalski"
 }
