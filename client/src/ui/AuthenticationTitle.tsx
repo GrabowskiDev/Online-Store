@@ -42,11 +42,12 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 			}
 
 			const data = await response.json();
-			const { token } = data.token;
+			const { token } = data;
 
 			if (remember) {
 				Cookies.set('jwt', token, { expires: 7 }); // 7 days
 			} else {
+				console.log('Token: ' + token);
 				Cookies.set('jwt', token); // Session cookie
 			}
 

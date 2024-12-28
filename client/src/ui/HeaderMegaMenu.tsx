@@ -28,7 +28,7 @@ export function HeaderMegaMenu() {
 		if (jwtToken) {
 			setToken(jwtToken);
 			setUserLogged(true);
-			console.log('User logged in');
+			console.log('User logged in' + token);
 		} else {
 			setUserLogged(false);
 			console.log('User not logged in');
@@ -54,7 +54,7 @@ export function HeaderMegaMenu() {
 					</Group>
 
 					<Group visibleFrom="sm">
-						{userLogged && <UserButton />}
+						{userLogged && <UserButton token={token} />}
 						{!userLogged && (
 							<>
 								<Anchor href="/login">
@@ -95,7 +95,7 @@ export function HeaderMegaMenu() {
 					<Divider my="sm" />
 
 					<Group justify="center" grow pb="xl" px="md">
-						{userLogged && <UserButton />}
+						{userLogged && <UserButton token={token} />}
 						{!userLogged && (
 							<>
 								<Anchor href="/login">
