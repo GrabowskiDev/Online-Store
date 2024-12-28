@@ -3,13 +3,10 @@ import { useEffect, useState } from 'react';
 
 import {
 	IconChevronRight,
-	IconHeart,
+	IconBasketCheck,
 	IconLogout,
-	IconMessage,
-	IconPlayerPause,
 	IconSettings,
 	IconStar,
-	IconSwitchHorizontal,
 	IconTrash,
 } from '@tabler/icons-react';
 import {
@@ -91,31 +88,23 @@ export function UserMenu({ token }: UserMenuProps) {
 					</UnstyledButton>
 				</Menu.Target>
 				<Menu.Dropdown>
+					<Menu.Label>Your stuff</Menu.Label>
 					<Menu.Item
 						leftSection={
-							<IconHeart size={16} stroke={1.5} color={theme.colors.red[6]} />
+							<IconBasketCheck size={16} stroke={1.5} color={theme.colors.blue[6]} />
 						}>
-						Liked posts
+						Orders
 					</Menu.Item>
 					<Menu.Item
 						leftSection={
 							<IconStar size={16} stroke={1.5} color={theme.colors.yellow[6]} />
 						}>
-						Saved posts
-					</Menu.Item>
-					<Menu.Item
-						leftSection={
-							<IconMessage size={16} stroke={1.5} color={theme.colors.blue[6]} />
-						}>
-						Your comments
+						Reviews
 					</Menu.Item>
 
 					<Menu.Label>Settings</Menu.Label>
 					<Menu.Item leftSection={<IconSettings size={16} stroke={1.5} />}>
 						Account settings
-					</Menu.Item>
-					<Menu.Item leftSection={<IconSwitchHorizontal size={16} stroke={1.5} />}>
-						Change account
 					</Menu.Item>
 					<Menu.Item leftSection={<IconLogout size={16} stroke={1.5} />}>
 						Logout
@@ -124,9 +113,6 @@ export function UserMenu({ token }: UserMenuProps) {
 					<Menu.Divider />
 
 					<Menu.Label>Danger zone</Menu.Label>
-					<Menu.Item leftSection={<IconPlayerPause size={16} stroke={1.5} />}>
-						Pause subscription
-					</Menu.Item>
 					<Menu.Item color="red" leftSection={<IconTrash size={16} stroke={1.5} />}>
 						Delete account
 					</Menu.Item>
