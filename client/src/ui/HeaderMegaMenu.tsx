@@ -10,6 +10,7 @@ import {
 	IconNotification,
 } from '@tabler/icons-react';
 import {
+	Anchor,
 	Box,
 	Burger,
 	Button,
@@ -105,9 +106,13 @@ export function HeaderMegaMenu() {
 					</Group>
 
 					<Group visibleFrom="sm">
-						{/* <Button variant="default">Log in</Button>
-						<Button>Sign up</Button> */}
-						<UserButton />
+						<Anchor href="/login">
+							<Button variant="default">Log in</Button>
+						</Anchor>
+						<Anchor href="/register">
+							<Button>Sign up</Button>
+						</Anchor>
+						{/* <UserButton /> */}
 					</Group>
 
 					<Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="sm" />

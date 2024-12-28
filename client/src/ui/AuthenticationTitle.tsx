@@ -64,10 +64,7 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 			</Title>
 			<Text c="dimmed" size="sm" ta="center" mt={5}>
 				Do not have an account yet?{' '}
-				<Anchor
-					size="sm"
-					component="button"
-					onClick={() => (window.location.href = '../register')}>
+				<Anchor size="sm" href="/register">
 					Create account
 				</Anchor>
 			</Text>
