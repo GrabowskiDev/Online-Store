@@ -14,7 +14,7 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { MantineLogo } from '@mantinex/mantine-logo';
 import classes from '../css/HeaderMegaMenu.module.css';
-import { UserButton } from './UserButton';
+import { UserMenu } from './UserMenu';
 
 export function HeaderMegaMenu() {
 	const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -28,7 +28,6 @@ export function HeaderMegaMenu() {
 		if (jwtToken) {
 			setToken(jwtToken);
 			setUserLogged(true);
-			console.log('User logged in' + token);
 		} else {
 			setUserLogged(false);
 			console.log('User not logged in');
@@ -54,7 +53,7 @@ export function HeaderMegaMenu() {
 					</Group>
 
 					<Group visibleFrom="sm">
-						{userLogged && <UserButton token={token} />}
+						{userLogged && <UserMenu token={token} />}
 						{!userLogged && (
 							<>
 								<Anchor href="/login">
@@ -95,7 +94,7 @@ export function HeaderMegaMenu() {
 					<Divider my="sm" />
 
 					<Group justify="center" grow pb="xl" px="md">
-						{userLogged && <UserButton token={token} />}
+						{userLogged && <UserMenu token={token} />}
 						{!userLogged && (
 							<>
 								<Anchor href="/login">
