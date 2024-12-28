@@ -215,6 +215,25 @@ app.get('/api/user/:id', async (req, res) => {
 	}
 });
 
+// Get all user info (SENSITIVE)
+app.get('/api/user', verifyToken, async (req, res) => {
+	try {
+		const user = await User.findByPk(req.userId); //verifyToken should override any userId
+		if (!user) {
+			return res.status(404).send('User not found');
+		}
+		res.status(200).json({
+			id: user.id,
+			email: user.email,
+			username: user.username,
+			firstName: user.firstName,
+			lastName: user.lastName,
+		});
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
 // Change password
 app.put('/api/change-password', verifyToken, async (req, res) => {
 	try {

@@ -25,7 +25,7 @@ POST http://127.0.0.1:3001/api/login
 Content-Type: application/json
 
 {
-	"login": "admin@corporation.com",
+	"login": "krzeselko@gmail.com",
 	"password": "password"
 }
 
@@ -33,6 +33,12 @@ Content-Type: application/json
 # Get user info
 ####################################
 GET http://127.0.0.1:3001/api/user/1
+
+####################################
+# Get all user info
+####################################
+GET http://127.0.0.1:3001/api/user
+Authorization: Bearer {{token}}
 
 ####################################
 # Change Password
