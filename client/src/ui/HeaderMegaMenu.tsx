@@ -10,9 +10,9 @@ import {
 	Drawer,
 	Group,
 	ScrollArea,
+	Image,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { MantineLogo } from '@mantinex/mantine-logo';
 import classes from '../css/HeaderMegaMenu.module.css';
 import { UserMenu } from './UserMenu';
 
@@ -38,8 +38,9 @@ export function HeaderMegaMenu() {
 		<Box pb={120}>
 			<header className={classes.header}>
 				<Group justify="space-evenly" h="100%">
-					<MantineLogo size={30} />
-
+					<Anchor href="/">
+						<Image src="/next.svg" alt="Logo" h={20} w="auto" />
+					</Anchor>
 					<Group h="100%" gap={0} visibleFrom="sm">
 						<a href="#" className={classes.link}>
 							Home
