@@ -1,14 +1,12 @@
 import Image from 'next/image';
 import styles from './page.module.css';
 import { HeaderMegaMenu } from '../ui/HeaderMegaMenu';
-import { UserButton } from '../ui/UserButton';
 import { FooterSimple } from '../ui/FooterSimple';
 
 export default function Home() {
 	return (
 		<div className={styles.page}>
 			<HeaderMegaMenu />
-			<UserButton />
 			<main>
 				<Image src="/next.svg" alt="Next.js logo" width={180} height={38} priority />
 				<ol>

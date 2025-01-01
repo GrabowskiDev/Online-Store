@@ -42,11 +42,12 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 			}
 
 			const data = await response.json();
-			const { token } = data.token;
+			const { token } = data;
 
 			if (remember) {
 				Cookies.set('jwt', token, { expires: 7 }); // 7 days
 			} else {
+				console.log('Token: ' + token);
 				Cookies.set('jwt', token); // Session cookie
 			}
 
@@ -64,10 +65,7 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 			</Title>
 			<Text c="dimmed" size="sm" ta="center" mt={5}>
 				Do not have an account yet?{' '}
-				<Anchor
-					size="sm"
-					component="button"
-					onClick={() => (window.location.href = '../register')}>
+				<Anchor size="sm" href="/register">
 					Create account
 				</Anchor>
 			</Text>

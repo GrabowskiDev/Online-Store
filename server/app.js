@@ -5,8 +5,14 @@ const app = express();
 const PORT = 3001;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 app.use(express.json());
+app.use(cors(
+	{
+		origin: 'http://localhost:3000',
+	}
+));
 
 const sequelize = new Sequelize({
 	dialect: 'sqlite',
@@ -206,6 +212,25 @@ app.get('/api/user/:id', async (req, res) => {
 			return res.status(404).send('User not found');
 		}
 		res.status(200).json({
+			username: user.username,
+			firstName: user.firstName,
+			lastName: user.lastName,
+		});
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+// Get all user info (SENSITIVE)
+app.get('/api/user', verifyToken, async (req, res) => {
+	try {
+		const user = await User.findByPk(req.userId); //verifyToken should override any userId
+		if (!user) {
+			return res.status(404).send('User not found');
+		}
+		res.status(200).json({
+			id: user.id,
+			email: user.email,
 			username: user.username,
 			firstName: user.firstName,
 			lastName: user.lastName,
