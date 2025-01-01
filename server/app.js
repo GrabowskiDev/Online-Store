@@ -5,8 +5,14 @@ const app = express();
 const PORT = 3001;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 app.use(express.json());
+app.use(cors(
+	{
+		origin: 'http://localhost:3000',
+	}
+));
 
 const sequelize = new Sequelize({
 	dialect: 'sqlite',
