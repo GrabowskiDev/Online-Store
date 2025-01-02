@@ -1,3 +1,4 @@
+'use client';
 import {
 	Box,
 	Paper,
@@ -18,13 +19,22 @@ import {
 } from '@tabler/icons-react';
 import { useState } from 'react';
 
-export default function ProductPageMenu() {
-	const [value, { increment, decrement }] = useCounter(0, { min: 0, max: 10 });
-	const [isTruncated, setIsTruncated] = useState(true);
-
-	const toggleTruncation = () => {
-		setIsTruncated(!isTruncated);
+type ProductPageMenuProps = {
+	product: {
+		id: number;
+		title: string;
+		price: number;
+		description: string;
+		category: string;
+		image: string;
+		rating: { rate: number; count: number };
 	};
+};
+
+export default function ProductPageMenu({ product }: ProductPageMenuProps) {
+	const [value, { increment, decrement }] = useCounter(0, { min: 0, max: 10 });
+	const [showDescription, setShowDescription] = useState(false);
+
 	return (
 		<Stack
 			justify="space-between"
@@ -35,19 +45,26 @@ export default function ProductPageMenu() {
 			<Box>
 				<Paper shadow="xs" p="md">
 					<Title order={1} c="#212427" pb="md">
-						Title of the product
+						{product.title}
 					</Title>
 					<Title order={2} c="#212427" mb="xl" pb="md">
-						22.50$
+						{product.price}$
 					</Title>
-					<Text c="#212427" size="l" lineClamp={isTruncated ? 1 : undefined}>
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, delectus cum
-						adipisci nesciunt modi, nulla voluptatem vel tempora atque eligendi qui
-						exercitationem, quia nobis libero nisi inventore rem corrupti cupiditate.
-					</Text>
-					<Button onClick={toggleTruncation} variant="subtle" mt="md">
-						{isTruncated ? 'Read more' : 'Read less'}
-					</Button>
+					<Box style={{ height: '200px', overflowY: 'auto' }}>
+						{showDescription && (
+							<Text c="#212427" size="l">
+								{product.description}
+							</Text>
+						)}
+						<Button
+							onClick={() => setShowDescription(!showDescription)}
+							variant="subtle"
+							mt={showDescription ? 'xs' : 0}
+							pl={0}
+							pr={0}>
+							{showDescription ? 'Hide description' : 'Show description'}
+						</Button>
+					</Box>
 				</Paper>
 			</Box>
 			<Box p="md"></Box>
@@ -86,7 +103,7 @@ export default function ProductPageMenu() {
 					leftSection={<span />}
 					variant="filled"
 					mt="md">
-					Add to cart
+					Buy now
 				</Button>
 			</Box>
 		</Stack>
