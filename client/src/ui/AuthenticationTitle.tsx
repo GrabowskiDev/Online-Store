@@ -52,9 +52,17 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 				body: JSON.stringify({ email, password }),
 			});
 
-			if (!response.ok) {
-				setError('Invalid login or password');
+			if (response.status == 404) {
+				setError('User not found');
 				return;
+			} else if (response.status == 401) {
+				setError('Invalid password');
+				return;
+			} else if (!response.ok) {
+				setError('Server error, try again later!');
+				return;
+			} else {
+				setError('');
 			}
 
 			const data = await response.json();
@@ -63,14 +71,13 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 			if (remember) {
 				Cookies.set('jwt', token, { expires: 7 }); // 7 days
 			} else {
-				console.log('Token: ' + token);
 				Cookies.set('jwt', token); // Session cookie
 			}
 
 			console.log('Logged in');
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (e) {
-			setError('Something went wrong');
+			setError('Something went wrong, try again later');
 		}
 	}
 
