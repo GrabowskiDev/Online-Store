@@ -8,11 +8,11 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
 app.use(express.json());
-app.use(cors(
-	{
+app.use(
+	cors({
 		origin: 'http://localhost:3000',
-	}
-));
+	})
+);
 
 const sequelize = new Sequelize({
 	dialect: 'sqlite',
@@ -176,15 +176,10 @@ app.post('/api/register', async (req, res) => {
 // Login
 app.post('/api/login', async (req, res) => {
 	try {
-		const { login } = req.body;
+		const { email } = req.body;
 		let user = await User.findOne({
-			where: { email: login },
+			where: { email },
 		});
-		if (!user) {
-			user = await User.findOne({
-				where: { username: login },
-			});
-		}
 		if (!user) {
 			return res.status(404).send('User not found');
 		}
