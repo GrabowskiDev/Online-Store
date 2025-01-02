@@ -10,6 +10,7 @@ import {
 	TextInput,
 	Title,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import Cookies from 'js-cookie';
 import classes from '../css/AuthenticationTitle.module.css';
@@ -21,19 +22,34 @@ interface AuthenticationTitleProps {
 const SERVER_IP = 'http://localhost:3001/api';
 
 export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitleProps) {
-	const [login, setLogin] = useState('');
-	const [password, setPassword] = useState('');
-	const [remember, setRemember] = useState(false);
 	const [error, setError] = useState('');
 
-	async function handleLogin() {
+	const form = useForm({
+		mode: 'uncontrolled',
+		initialValues: { email: '', password: '', remember: false },
+
+		// functions will be used to validate values at corresponding key
+		validate: {
+			email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+			password: (value) =>
+				value.length < 2 ? 'Password must have at least 6 letters' : null,
+		},
+	});
+
+	async function handleLogin(values: {
+		email: string;
+		password: string;
+		remember: boolean;
+	}) {
+		const { email, password, remember } = values;
+
 		try {
 			const response = await fetch(`${SERVER_IP}/login`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ login, password }),
+				body: JSON.stringify({ email, password }),
 			});
 
 			if (!response.ok) {
@@ -70,41 +86,41 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 				</Anchor>
 			</Text>
 
-			<Paper withBorder shadow="md" p={30} mt={30} radius="md">
-				<TextInput
-					label="Username or Email"
-					placeholder="you@mantine.dev"
-					required
-					value={login}
-					onChange={(event) => setLogin(event.currentTarget.value)}
-				/>
-				<PasswordInput
-					label="Password"
-					placeholder="Your password"
-					required
-					mt="md"
-					value={password}
-					onChange={(event) => setPassword(event.currentTarget.value)}
-				/>
-				<Group justify="space-between" mt="lg">
-					<Checkbox
-						label="Remember me"
-						checked={remember}
-						onChange={(event) => setRemember(event.currentTarget.checked)}
+			<form onSubmit={form.onSubmit(handleLogin)}>
+				<Paper withBorder shadow="md" p={30} mt={30} radius="md">
+					<TextInput
+						label="Email"
+						placeholder="student@agh.pl"
+						key={form.key('email')}
+						{...form.getInputProps('email')}
 					/>
-					<Anchor component="button" size="sm" onClick={onForgotPassword}>
-						Forgot password?
-					</Anchor>
-				</Group>
-				{error && (
-					<Text color="red" mt={10}>
-						{error}
-					</Text>
-				)}
-				<Button fullWidth mt={10} onClick={handleLogin}>
-					Sign in
-				</Button>
-			</Paper>
+					<PasswordInput
+						mt="md"
+						label="Password"
+						placeholder="Your password"
+						key={form.key('password')}
+						{...form.getInputProps('password')}
+					/>
+					<Group justify="space-between" mt="lg">
+						<Checkbox
+							label="Remember me"
+							key={form.key('remember')}
+							{...form.getInputProps('remember')}
+						/>
+						<Anchor component="button" size="sm" onClick={onForgotPassword}>
+							Forgot password?
+						</Anchor>
+					</Group>
+					{error && (
+						<Text color="red" mt={10}>
+							{error}
+						</Text>
+					)}
+					<Button type="submit" fullWidth mt={10}>
+						Sign in
+					</Button>
+				</Paper>
+			</form>
 		</Container>
 	);
 }
