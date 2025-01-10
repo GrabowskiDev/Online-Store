@@ -11,6 +11,7 @@ import {
 	Group,
 	ScrollArea,
 	Image,
+	Loader,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from '../css/HeaderMegaMenu.module.css';
@@ -86,7 +87,9 @@ export function HeaderMegaMenu() {
 					</Group>
 
 					<Group visibleFrom="sm">
-						{userLoading ? null : (
+						{userLoading ? (
+							<Loader color="blue" size="lg" type="dots" />
+						) : (
 							<>
 								{userLogged && <UserMenu token={token} onLogout={handleLogout} />}
 								{!userLogged && (
