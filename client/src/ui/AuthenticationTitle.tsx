@@ -11,6 +11,7 @@ import {
 	Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
@@ -76,7 +77,16 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 				Cookies.set('jwt', token); // Session cookie
 			}
 
-			console.log('Logged in');
+			notifications.show({
+				id: 'logged-in',
+				position: 'top-center',
+				withCloseButton: false,
+				autoClose: 2000,
+				title: 'Logged in successfully!',
+				message: 'Redirecting, please wait...',
+				loading: true,
+			});
+			await new Promise((resolve) => setTimeout(resolve, 1000));
 			router.push('/');
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (e) {
