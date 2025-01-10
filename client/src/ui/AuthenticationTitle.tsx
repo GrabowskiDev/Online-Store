@@ -85,6 +85,7 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 				title: 'Logged in successfully!',
 				message: 'Redirecting, please wait...',
 				loading: true,
+				withBorder: true,
 			});
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 			router.push('/');
