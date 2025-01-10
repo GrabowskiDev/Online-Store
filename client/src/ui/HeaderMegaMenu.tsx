@@ -16,22 +16,49 @@ import { useDisclosure } from '@mantine/hooks';
 import classes from '../css/HeaderMegaMenu.module.css';
 import { UserMenu } from './UserMenu';
 
+const SERVER_IP = 'http://localhost:3001/api';
+
 export function HeaderMegaMenu() {
 	const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
 		useDisclosure(false);
 
 	const [token, setToken] = useState('');
 	const [userLogged, setUserLogged] = useState(false);
+	const [userLoading, setUserLoading] = useState(true);
 
 	useEffect(() => {
 		const jwtToken = Cookies.get('jwt');
-		if (jwtToken) {
-			setToken(jwtToken);
-			setUserLogged(true);
-		} else {
-			setUserLogged(false);
-			console.log('User not logged in');
-		}
+		const verifyUser = async () => {
+			if (jwtToken) {
+				try {
+					const response = await fetch(`${SERVER_IP}/verify`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: `Bearer ${jwtToken}`,
+						},
+					});
+					if (response.ok) {
+						setUserLogged(true);
+						setToken(jwtToken);
+						setUserLoading(false);
+					} else {
+						setUserLogged(false);
+						setUserLoading(false);
+					}
+				} catch (error) {
+					console.error('Error verifying user:', error);
+					setUserLogged(false);
+					setUserLoading(false);
+				} finally {
+					setUserLoading(false);
+				}
+			} else {
+				setUserLoading(false);
+			}
+		};
+
+		verifyUser();
 	}, []);
 
 	const handleLogout = () => {
@@ -59,15 +86,19 @@ export function HeaderMegaMenu() {
 					</Group>
 
 					<Group visibleFrom="sm">
-						{userLogged && <UserMenu token={token} onLogout={handleLogout} />}
-						{!userLogged && (
+						{userLoading ? null : (
 							<>
-								<Anchor href="/login">
-									<Button variant="default">Log in</Button>
-								</Anchor>
-								<Anchor href="/register">
-									<Button>Sign up</Button>
-								</Anchor>
+								{userLogged && <UserMenu token={token} onLogout={handleLogout} />}
+								{!userLogged && (
+									<>
+										<Anchor href="/login">
+											<Button variant="default">Log in</Button>
+										</Anchor>
+										<Anchor href="/register">
+											<Button>Sign up</Button>
+										</Anchor>
+									</>
+								)}
 							</>
 						)}
 					</Group>
