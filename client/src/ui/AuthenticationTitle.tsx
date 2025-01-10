@@ -12,6 +12,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import classes from '../css/AuthenticationTitle.module.css';
 
@@ -22,6 +23,7 @@ interface AuthenticationTitleProps {
 const SERVER_IP = 'http://localhost:3001/api';
 
 export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitleProps) {
+	const router = useRouter();
 	const [error, setError] = useState('');
 
 	const form = useForm({
@@ -32,7 +34,7 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 		validate: {
 			email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
 			password: (value) =>
-				value.length < 2 ? 'Password must have at least 6 letters' : null,
+				value.length < 4 ? 'Password must have at least 4 letters' : null,
 		},
 	});
 
@@ -75,6 +77,7 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 			}
 
 			console.log('Logged in');
+			router.push('/');
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (e) {
 			setError('Something went wrong, try again later');

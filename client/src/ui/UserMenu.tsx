@@ -18,14 +18,16 @@ import {
 	useMantineTheme,
 } from '@mantine/core';
 import classes from '../css/UserMenu.module.css';
+import Cookies from 'js-cookie';
 
 interface UserMenuProps {
 	token: string;
+	onLogout: () => void;
 }
 
 const SERVER_IP = 'http://localhost:3001/api';
 
-export function UserMenu({ token }: UserMenuProps) {
+export function UserMenu({ token, onLogout }: UserMenuProps) {
 	const theme = useMantineTheme();
 
 	const [username, setUsername] = useState('');
@@ -51,11 +53,15 @@ export function UserMenu({ token }: UserMenuProps) {
 				console.error('Failed to fetch user data:', error);
 			}
 		}
-
 		if (token) {
 			getUserData();
 		}
 	}, [token]);
+
+	function handleLogout() {
+		Cookies.remove('jwt');
+		onLogout();
+	}
 
 	return (
 		<Group justify="center">
@@ -106,7 +112,9 @@ export function UserMenu({ token }: UserMenuProps) {
 					<Menu.Item leftSection={<IconSettings size={16} stroke={1.5} />}>
 						Account settings
 					</Menu.Item>
-					<Menu.Item leftSection={<IconLogout size={16} stroke={1.5} />}>
+					<Menu.Item
+						leftSection={<IconLogout size={16} stroke={1.5} />}
+						onClick={handleLogout}>
 						Logout
 					</Menu.Item>
 

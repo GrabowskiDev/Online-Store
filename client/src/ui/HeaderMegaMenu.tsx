@@ -34,6 +34,11 @@ export function HeaderMegaMenu() {
 		}
 	}, []);
 
+	const handleLogout = () => {
+		setToken('');
+		setUserLogged(false);
+	};
+
 	return (
 		<Box pb={120}>
 			<header className={classes.header}>
@@ -54,7 +59,7 @@ export function HeaderMegaMenu() {
 					</Group>
 
 					<Group visibleFrom="sm">
-						{userLogged && <UserMenu token={token} />}
+						{userLogged && <UserMenu token={token} onLogout={handleLogout} />}
 						{!userLogged && (
 							<>
 								<Anchor href="/login">
@@ -95,7 +100,7 @@ export function HeaderMegaMenu() {
 					<Divider my="sm" />
 
 					<Group justify="center" grow pb="xl" px="md">
-						{userLogged && <UserMenu token={token} />}
+						{userLogged && <UserMenu token={token} onLogout={handleLogout} />}
 						{!userLogged && (
 							<>
 								<Anchor href="/login">
