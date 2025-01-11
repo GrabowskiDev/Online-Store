@@ -5,6 +5,8 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
+import { HeaderMegaMenu } from '../ui/HeaderMegaMenu';
+import { FooterSimple } from '../ui/FooterSimple';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -32,10 +34,14 @@ export default function RootLayout({
 				<ColorSchemeScript />
 			</head>
 			<body className={`${geistSans.variable} ${geistMono.variable}`}>
-				<MantineProvider>
-					<Notifications />
-					{children}
-				</MantineProvider>
+				<div className="mainApp">
+					<MantineProvider>
+						<HeaderMegaMenu />
+						<Notifications />
+						{children}
+						<FooterSimple />
+					</MantineProvider>
+				</div>
 			</body>
 		</html>
 	);
