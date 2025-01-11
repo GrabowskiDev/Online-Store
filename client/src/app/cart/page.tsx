@@ -1,8 +1,9 @@
 'use client';
-import { Container, Paper } from '@mantine/core';
+import { Container, Paper, Group, Button, Title } from '@mantine/core';
 import classes from './page.module.css';
 import ProductList from '@/ui/ProductList';
 import { useEffect, useState } from 'react';
+import { IconCashRegister } from '@tabler/icons-react';
 
 interface CartProduct {
 	id: number;
@@ -27,6 +28,7 @@ export default function CartPage() {
 	]);
 
 	const [productList, setProductList] = useState<Product[]>([]);
+	const [totalPrice, setTotalPrice] = useState(0);
 
 	function addToCartList(product: CartProduct) {
 		setCart((prevCart) => [...prevCart, product]);
@@ -51,12 +53,31 @@ export default function CartPage() {
 		});
 	}, [cart]);
 
+	useEffect(() => {
+		let total = 0;
+		productList.map((product) => {
+			total += product.price * product.quantity;
+		});
+		setTotalPrice(total);
+	}, [productList]);
+
 	return (
 		<div className={classes.main}>
 			<Container size="lg">
-				<Paper withBorder w={'100%'} mih={'50vh'}>
+				<Paper withBorder w={'100%'} mih={'50vh'} mb="lg">
 					<ProductList list={productList} />
 				</Paper>
+				<Group justify="space-between" align="center">
+					<Title>Total price: $ {totalPrice.toFixed(2)} </Title>
+					<Button
+						justify="center"
+						h={44}
+						rightSection={<IconCashRegister size={24} style={{ color: 'white' }} />}
+						leftSection={<span />}
+						variant="filled">
+						BUY NOW
+					</Button>
+				</Group>
 			</Container>
 		</div>
 	);
