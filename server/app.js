@@ -8,11 +8,11 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
 app.use(express.json());
-app.use(cors(
-	{
+app.use(
+	cors({
 		origin: 'http://localhost:3000',
-	}
-));
+	})
+);
 
 const sequelize = new Sequelize({
 	dialect: 'sqlite',
@@ -115,7 +115,7 @@ sequelize
 		console.error('Error creating database & tables:', error);
 	});
 
-function verifyToken(req, res, next) {
+async function verifyToken(req, res, next) {
 	const token = req.header('Authorization');
 	if (!token)
 		return res.status(403).json('A token is required for authentication');
@@ -123,6 +123,10 @@ function verifyToken(req, res, next) {
 		const decoded = jwt.verify(token.split(' ')[1], process.env.SECRET_KEY);
 		req.userId = decoded.id;
 		req.email = decoded.email;
+		const user = await User.findByPk(req.userId);
+		if (user.email !== req.email) {
+			return res.status(403).json('Invalid token');
+		}
 		next();
 	} catch (error) {
 		res.status(401).json('Invalid token');
@@ -176,15 +180,10 @@ app.post('/api/register', async (req, res) => {
 // Login
 app.post('/api/login', async (req, res) => {
 	try {
-		const { login } = req.body;
+		const { email } = req.body;
 		let user = await User.findOne({
-			where: { email: login },
+			where: { email },
 		});
-		if (!user) {
-			user = await User.findOne({
-				where: { username: login },
-			});
-		}
 		if (!user) {
 			return res.status(404).send('User not found');
 		}
@@ -202,6 +201,11 @@ app.post('/api/login', async (req, res) => {
 	} catch (error) {
 		res.status(500).send('Internal Server Error' + error);
 	}
+});
+
+// Verify user
+app.get('/api/verify', verifyToken, (req, res) => {
+	res.status(200).send('User is verified');
 });
 
 // Get basic user info
