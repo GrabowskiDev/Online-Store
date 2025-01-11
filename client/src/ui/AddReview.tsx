@@ -10,6 +10,7 @@ const SERVER_IP = 'http://localhost:3001/api';
 export default function AddReview({ productId }: { productId: number }) {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [reviewText, setReviewText] = useState('');
+	const [rating, setRating] = useState(0);
 
 	async function submitReview() {
 		const jwtToken = Cookies.get('jwt');
@@ -47,7 +48,12 @@ export default function AddReview({ productId }: { productId: number }) {
 						'Content-Type': 'application/json',
 						Authorization: `Bearer ${jwtToken}`,
 					},
-					body: JSON.stringify({ userId, productId: productId, text: reviewText }),
+					body: JSON.stringify({
+						userId,
+						productId: productId,
+						text: reviewText,
+						rating,
+					}),
 				});
 
 				if (!response2.ok) {
@@ -77,7 +83,7 @@ export default function AddReview({ productId }: { productId: number }) {
 	return (
 		<>
 			<Modal opened={opened} onClose={close} title="Review" centered>
-				<Rating defaultValue={0} fractions={2} size="lg" mb="lg" />
+				<Rating value={rating} fractions={2} size="lg" mb="lg" onChange={setRating} />
 				<Textarea
 					placeholder="Your review"
 					label="What do you think about this product?"
@@ -92,7 +98,7 @@ export default function AddReview({ productId }: { productId: number }) {
 				</Button>
 			</Modal>
 
-			<Paper shadow="lg" withBorder p="sm">
+			<Paper shadow="lg" withBorder radius="md" p="sm" mb="md">
 				<Group justify="space-between">
 					<Title>You seem to have bought this product</Title>
 					<Button variant="default" onClick={open} w={200}>

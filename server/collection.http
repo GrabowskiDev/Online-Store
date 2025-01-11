@@ -10,9 +10,9 @@ POST http://127.0.0.1:3001/api/register
 Content-Type: application/json
 
 {
-	"email": "krzeselko@gmail.com",
-	"password": "password",
-	"username": "krzeselko",
+	"email": "admin@admin.com",
+	"password": "pass",
+	"username": "admin",
 	"firstName": "Jan",
 	"lastName": "Kowalski"
 }
@@ -25,8 +25,8 @@ POST http://127.0.0.1:3001/api/login
 Content-Type: application/json
 
 {
-	"email": "krzeselkoo@gmail.com",
-	"password": "password"
+	"email": "admin@admin.com",
+	"password": "pass"
 }
 
 ####################################
@@ -62,10 +62,12 @@ GET http://127.0.0.1:3001/api/reviews
 # Create review
 ####################################
 POST http://127.0.0.1:3001/api/reviews
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-	"userId": "1",
-	"productId": "1",
-	"text": "This is a great product"
+	"userId": "2",
+	"productId": "2",
+	"rating": 5,
+	"text": "I really like this product"
 }

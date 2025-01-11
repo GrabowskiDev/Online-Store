@@ -77,6 +77,10 @@ const Review = sequelize.define('Review', {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
+	rating: {
+		type: DataTypes.NUMBER,
+		allowNull: false,
+	},
 });
 
 const Cart = sequelize.define('Cart', {
@@ -304,12 +308,13 @@ app.get('/api/reviews/user/:userId', async (req, res) => {
 // Create review
 app.post('/api/reviews', verifyToken, async (req, res) => {
 	try {
-		const { productId, text } = req.body;
+		const { productId, text, rating } = req.body;
 		const userId = req.userId;
 		const review = await Review.create({
 			userId,
 			productId,
 			text,
+			rating,
 		});
 		res.status(201).json(review);
 	} catch (error) {
