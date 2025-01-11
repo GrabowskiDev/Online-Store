@@ -104,7 +104,7 @@ const Cart = sequelize.define('Cart', {
 });
 
 sequelize
-	.sync({ force: true })
+	.sync()
 	.then(() => {
 		console.log('Database & tables created!');
 		app.listen(PORT, () => {
