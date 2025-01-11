@@ -1,0 +1,12 @@
+/* filepath: /c:/Users/Kolenokses/github/Online-Store/client/src/app/product-page/page.module.css */
+.main {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	justify-content: space-between;
+}
+
+.content {
+	flex: 1 1 auto; /* ProductArea takes the remaining space */
+	overflow: auto; /* Ensure content is scrollable if it overflows */
+}
