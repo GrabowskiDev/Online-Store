@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mantine/core": "^7.15.1",
+    "@mantine/form": "^7.15.2",
     "@mantine/hooks": "^7.15.1",
     "@mantine/notifications": "^7.15.1",
     "@mantinex/mantine-logo": "^1.1.0",

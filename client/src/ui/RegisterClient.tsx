@@ -11,6 +11,8 @@ import {
 	Title,
 } from '@mantine/core';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { notifications } from '@mantine/notifications';
 import classes from '../css/AuthenticationTitle.module.css';
 
 const SERVER_IP = 'http://localhost:3001/api';
@@ -23,6 +25,8 @@ export function RegisterClient() {
 	const [password, setPassword] = useState('');
 	const [passwordConfirm, setPasswordConfirm] = useState('');
 	const [error, setError] = useState('');
+
+	const router = useRouter();
 
 	async function handleRegister() {
 		if (password !== passwordConfirm) {
@@ -50,10 +54,19 @@ export function RegisterClient() {
 				return;
 			}
 
-			const data = await response.json();
-			const { id } = data;
+			notifications.show({
+				id: 'logged-in',
+				position: 'top-center',
+				withCloseButton: true,
+				autoClose: 2000,
+				title: 'Registered successfully',
+				message: 'You can now log in!',
+				loading: false,
+				withBorder: true,
+			});
 
-			console.log('Registered, userID:', id);
+			router.push('/login');
+
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (e) {
 			setError('Something went wrong');
