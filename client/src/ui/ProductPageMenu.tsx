@@ -10,6 +10,7 @@ import {
 	Stack,
 	NumberInput,
 	Center,
+	Rating,
 } from '@mantine/core';
 import { useCounter } from '@mantine/hooks';
 import {
@@ -42,6 +43,12 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 				<Title order={1} c="#212427" pb="md">
 					{product.title}
 				</Title>
+				<Group mb="md">
+					<Rating value={product.rating.rate} fractions={4} readOnly color="#FFD700" />
+					<Text size="sm" c="#212427">
+						{product.rating.count} reviews
+					</Text>
+				</Group>
 				<Title order={2} c="#212427" mb="xl" pb="md">
 					$ {product.price.toFixed(2)}
 				</Title>
