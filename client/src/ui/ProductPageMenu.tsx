@@ -37,20 +37,13 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 	const [showDescription, setShowDescription] = useState(false);
 
 	return (
-		<Stack
-			justify="space-between"
-			// style={
-			// 	{
-			// 		// width: '90%',
-			// 		// height: '80%',
-			// 	}
-		>
+		<Stack justify="space-between">
 			<Paper shadow="xs" p="md" ml="sm" mr="sm" mb={'2rem'}>
 				<Title order={1} c="#212427" pb="md">
 					{product.title}
 				</Title>
 				<Title order={2} c="#212427" mb="xl" pb="md">
-					{product.price}$
+					$ {product.price.toFixed(2)}
 				</Title>
 				<Box style={{ height: '200px', overflowY: 'auto' }}>
 					{showDescription && (

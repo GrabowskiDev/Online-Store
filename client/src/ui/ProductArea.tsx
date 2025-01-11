@@ -1,5 +1,5 @@
 'use client';
-import { Box, Container, Grid, Image, Loader, Text } from '@mantine/core';
+import { Container, Grid, Image, Loader, Text, Center, Paper } from '@mantine/core';
 import ProductPageMenu from './ProductPageMenu';
 import { useEffect, useState } from 'react';
 
@@ -42,21 +42,23 @@ export default function ProductArea({ productId }: ProductAreaProps) {
 			) : !product ? (
 				<Text>Product not found</Text>
 			) : (
-				<Grid>
-					<Grid.Col span={7} style={{ display: 'flex', justifyContent: 'center' }}>
-						<Box style={{ height: '85%', width: '85%' }}>
-							<Image
-								src={product.image}
-								alt="Product"
-								style={{
-									border: '1px solid black',
-									objectFit: 'contain',
-									marginLeft: 'auto',
-									marginRight: 'auto',
-									maxHeight: '800px',
-								}}
-							/>
-						</Box>
+				<Grid gutter="xl">
+					<Grid.Col span={7}>
+						<Center>
+							<Paper radius="lg" withBorder p={'3rem'}>
+								<Image
+									src={product.image}
+									alt="Product"
+									style={{
+										objectFit: 'contain',
+										marginLeft: 'auto',
+										marginRight: 'auto',
+										maxHeight: '800px',
+									}}
+								/>
+								{/* </Box> */}
+							</Paper>
+						</Center>
 					</Grid.Col>
 					<Grid.Col p="none" span={5}>
 						<ProductPageMenu product={product} />
