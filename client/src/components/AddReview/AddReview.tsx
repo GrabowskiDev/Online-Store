@@ -1,5 +1,5 @@
 'use client';
-import { Paper, Rating, Title, Textarea, Button, Group, Modal, Box } from '@mantine/core';
+import { Rating, Title, Textarea, Button, Group, Modal, Box } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'react';

@@ -1,9 +1,43 @@
 import { Card, Image, Text, Stack, Title, Button } from '@mantine/core';
-
+import { notifications } from '@mantine/notifications';
 import { Product } from '@/config/types';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
+import { addProductToCart } from '@/utils/api';
 
 export default function ProductPreview({ product }: { product: Product }) {
+	const { token } = useAuth();
+
+	const addToCart = async () => {
+		if (!token) {
+			notifications.show({
+				title: 'You need to be logged in to add a product to cart',
+				message: 'Please log in or register to add a product to cart',
+				color: 'red',
+			});
+		} else {
+			try {
+				const response = await addProductToCart(product.id, 1, token);
+				if (!response!.ok) {
+					notifications.show({
+						title: 'Error',
+						message: 'An error has occured',
+						color: 'red',
+					});
+					return;
+				}
+				notifications.show({
+					title: 'Product added to cart',
+					message: `${product.title} has been added to your cart`,
+					color: 'green',
+				});
+			} catch (error) {
+				console.error('Error adding product to cart:', error);
+				throw error;
+			}
+		}
+	};
+
 	return (
 		<Card shadow="sm" p="xl" radius="md" withBorder>
 			<Link href={`/product/${product.id}`}>
@@ -25,7 +59,7 @@ export default function ProductPreview({ product }: { product: Product }) {
 					</Stack>
 				</Link>
 
-				<Button variant="light" color="blue" fullWidth>
+				<Button variant="light" color="blue" fullWidth onClick={addToCart}>
 					Add to Cart
 				</Button>
 			</Stack>

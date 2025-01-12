@@ -21,14 +21,48 @@ import {
 } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Product } from '@/config/types';
+import { useAuth } from '@/context/AuthContext';
+import { notifications } from '@mantine/notifications';
+import { addProductToCart } from '@/utils/api';
 
 type ProductPageMenuProps = {
 	product: Product;
 };
 
 export default function ProductPageMenu({ product }: ProductPageMenuProps) {
-	const [value, { increment, decrement }] = useCounter(0, { min: 0, max: 10 });
+	const [value, { increment, decrement }] = useCounter(1, { min: 1, max: 10 });
 	const [showDescription, setShowDescription] = useState(false);
+	const { token } = useAuth();
+
+	const addToCart = async () => {
+		if (!token) {
+			notifications.show({
+				title: 'You need to be logged in to add a product to cart',
+				message: 'Please log in or register to add a product to cart',
+				color: 'red',
+			});
+		} else {
+			try {
+				const response = await addProductToCart(product.id, value, token);
+				if (!response!.ok) {
+					notifications.show({
+						title: 'Error',
+						message: 'An error has occured',
+						color: 'red',
+					});
+					return;
+				}
+				notifications.show({
+					title: 'Product added to cart',
+					message: `${product.title} has been added to your cart in quantity of ${value}`,
+					color: 'green',
+				});
+			} catch (error) {
+				console.error('Error adding product to cart:', error);
+				throw error;
+			}
+		}
+	};
 
 	return (
 		<Stack justify="space-between">
@@ -71,7 +105,7 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 							size="md"
 							defaultValue={0}
 							value={value}
-							min={0}
+							min={1}
 							max={10}
 							readOnly
 							hideControls></NumberInput>
@@ -92,7 +126,8 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 					rightSection={<IconShoppingCart size={24} style={{ color: 'black' }} />}
 					leftSection={<span />}
 					variant="default"
-					mt="xl">
+					mt="xl"
+					onClick={addToCart}>
 					ADD TO CART
 				</Button>
 				<Button
