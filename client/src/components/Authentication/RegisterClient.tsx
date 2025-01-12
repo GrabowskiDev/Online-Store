@@ -13,7 +13,7 @@ import {
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { notifications } from '@mantine/notifications';
-import classes from '@/css/AuthenticationTitle.module.css';
+import classes from '@/css/LoginForm.module.css';
 
 const SERVER_IP = 'http://localhost:3001/api';
 

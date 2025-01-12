@@ -5,7 +5,7 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
-import { HeaderMegaMenu } from '../components/Header/Header';
+import Header from '../components/Header/Header';
 import { FooterSimple } from '../components/Layout/FooterSimple';
 import { AuthProvider } from '@/context/AuthContext';
 
@@ -36,14 +36,14 @@ export default function RootLayout({
 			</head>
 			<body className={`${geistSans.variable} ${geistMono.variable}`}>
 				<div className="mainApp">
-					<MantineProvider>
-						<AuthProvider>
-							<HeaderMegaMenu />
+					<AuthProvider>
+						<MantineProvider>
+							<Header />
 							<Notifications />
 							{children}
 							<FooterSimple />
-						</AuthProvider>
-					</MantineProvider>
+						</MantineProvider>
+					</AuthProvider>
 				</div>
 			</body>
 		</html>

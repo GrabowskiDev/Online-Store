@@ -15,8 +15,9 @@ import { useDisclosure } from '@mantine/hooks';
 import classes from '@/css/Header.module.css';
 import { UserMenu } from './UserMenu';
 import { useAuth } from '@/context/AuthContext';
+import React from 'react';
 
-export function HeaderMegaMenu() {
+function Header() {
 	const { user, logout, loading } = useAuth();
 	const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
 		useDisclosure(false);
@@ -107,3 +108,5 @@ export function HeaderMegaMenu() {
 		</Box>
 	);
 }
+
+export default React.memo(Header);
