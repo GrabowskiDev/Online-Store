@@ -29,28 +29,6 @@ export default function ProductListElement({ product }: ProductListElementProps)
 	}, [product.price, productAmount]);
 
 	return (
-		// <>
-		// 	<Paper p="md" shadow="xs" style={{ width: 300 }}>
-		// 		<Image src={product.image} alt={'image'} style={{ height: '100%' }} />
-		// 		<Title>{product.title}</Title>
-		// 		<Group>
-		// 			<ActionIcon variant="default" size="xl" radius="md" onClick={decrement}>
-		// 				<IconMinus color="var(--mantine-color-gray-text)" />
-		// 			</ActionIcon>
-		// 			<NumberInput
-		// 				size="md"
-		// 				defaultValue={0}
-		// 				value={productAmount}
-		// 				min={0}
-		// 				max={10}
-		// 				readOnly
-		// 				hideControls></NumberInput>
-		// 			<ActionIcon variant="default" size="xl" radius="md" onClick={increment}>
-		// 				<IconPlus color="var(--mantine-color-gray-text)" />
-		// 			</ActionIcon>
-		// 		</Group>
-		// 	</Paper>
-		// </>
 		<>
 			<Paper p="md" shadow="xs" w={'100%'}>
 				<Group justify="space-between">
