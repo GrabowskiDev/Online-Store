@@ -4,6 +4,10 @@ import classes from './page.module.css';
 import ProductList from '@/components/Product/ProductList';
 import { useEffect, useState } from 'react';
 import { IconCashRegister } from '@tabler/icons-react';
+import { useAuth } from '@/context/AuthContext';
+import { SERVER_IP } from '@/config/config';
+import { notifications } from '@mantine/notifications';
+import { fetchProduct } from '@/utils/api';
 
 interface CartProduct {
 	id: number;
@@ -22,36 +26,68 @@ interface Product {
 }
 
 export default function CartPage() {
-	const [cart, setCart] = useState<CartProduct[]>([
-		{ id: 2, quantity: 1 },
-		{ id: 3, quantity: 4 },
-	]);
-
+	const [cart, setCart] = useState<CartProduct[]>([]);
 	const [productList, setProductList] = useState<Product[]>([]);
 	const [totalPrice, setTotalPrice] = useState(0);
-
-	function addToCartList(product: CartProduct) {
-		setCart((prevCart) => [...prevCart, product]);
-	}
-
-	function addToProductList(product: Product, quantity: number) {
-		product.quantity = quantity;
-		setProductList((prevList) => [...prevList, product]);
-	}
+	const { token, loading } = useAuth();
 
 	useEffect(() => {
-		cart.map((product) => {
+		if (!token && !loading) {
+			notifications.show({
+				title: 'You need to be logged in to view your cart',
+				message: 'Please log in or register to view your cart',
+				color: 'red',
+			});
+			return;
+		}
+
+		const fetchCart = async () => {
 			try {
-				fetch(`https://fakestoreapi.com/products/${product.id}`)
-					.then((res) => res.json())
-					.then((data) => {
-						addToProductList(data, product.quantity);
-					});
-			} catch (error) {
-				console.error('Error fetching product:', error);
+				const response = await fetch(`${SERVER_IP}/cart`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+				});
+
+				if (!response.ok) {
+					throw new Error('Failed to fetch cart');
+				}
+
+				const data = await response.json();
+
+				if (!Array.isArray(data)) {
+					throw new Error('Cart data is not an array');
+				}
+
+				setCart(data);
+			} catch {
+				notifications.show({
+					title: 'Error fetching cart',
+					message: 'Error fetching cart',
+					color: 'red',
+				});
 			}
-		});
-	}, [cart]);
+		};
+
+		const fetchProducts = async () => {
+			try {
+				const productPromises = cart.map(async (product) => {
+					const productObj = await fetchProduct(product.id);
+					return { ...productObj, quantity: product.quantity };
+				});
+				const products = await Promise.all(productPromises);
+				setProductList(products);
+			} catch (error) {
+				console.error('Error fetching products:', error);
+			}
+		};
+
+		if (token && !loading) {
+			fetchCart().then(fetchProducts);
+		}
+	}, [token, loading, cart]);
 
 	useEffect(() => {
 		let total = 0;

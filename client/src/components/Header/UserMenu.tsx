@@ -5,6 +5,7 @@ import {
 	IconLogout,
 	IconSettings,
 	IconStar,
+	IconShoppingCart,
 } from '@tabler/icons-react';
 import {
 	Avatar,
@@ -57,6 +58,13 @@ export function UserMenu({ onLogout }: UserMenuProps) {
 				</Menu.Target>
 				<Menu.Dropdown>
 					<Menu.Label>Your stuff</Menu.Label>
+					<Menu.Item
+						leftSection={
+							<IconShoppingCart size={16} stroke={1.5} color={theme.colors.blue[6]} />
+						}
+						onClick={() => (window.location.href = '/cart')}>
+						Cart
+					</Menu.Item>
 					<Menu.Item
 						leftSection={
 							<IconBasketCheck size={16} stroke={1.5} color={theme.colors.blue[6]} />

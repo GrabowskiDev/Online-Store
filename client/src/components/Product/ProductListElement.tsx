@@ -7,6 +7,7 @@ import {
 	NumberInput,
 	Stack,
 	Text,
+	CloseButton,
 } from '@mantine/core';
 import { useCounter } from '@mantine/hooks';
 import { IconMinus, IconPlus } from '@tabler/icons-react';
@@ -55,6 +56,7 @@ export default function ProductListElement({ product }: ProductListElementProps)
 						<ActionIcon variant="default" size="xl" radius="md" onClick={increment}>
 							<IconPlus color="var(--mantine-color-gray-text)" />
 						</ActionIcon>
+						<CloseButton />
 					</Group>
 				</Group>
 			</Paper>
