@@ -1,5 +1,5 @@
 'use client';
-import { Paper, Rating, Title, Textarea, Button, Group, Modal } from '@mantine/core';
+import { Paper, Rating, Title, Textarea, Button, Group, Modal, Box } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'react';
@@ -98,14 +98,14 @@ export default function AddReview({ productId }: { productId: number }) {
 				</Button>
 			</Modal>
 
-			<Paper shadow="lg" withBorder radius="md" p="sm" mb="md">
+			<Box mb="xl">
 				<Group justify="space-between">
 					<Title>You seem to have bought this product</Title>
 					<Button variant="default" onClick={open} w={200}>
 						Add a review
 					</Button>
 				</Group>
-			</Paper>
+			</Box>
 		</>
 	);
 }

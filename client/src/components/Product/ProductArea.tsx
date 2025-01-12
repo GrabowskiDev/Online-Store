@@ -1,5 +1,5 @@
 'use client';
-import { Container, Grid, Image, Loader, Text, Center, Paper } from '@mantine/core';
+import { Container, Image, Loader, Text, Paper } from '@mantine/core';
 import ProductPageMenu from './ProductPageMenu';
 import { useEffect, useState } from 'react';
 import ProductReviews from './ProductReviews';
@@ -28,34 +28,27 @@ export default function ProductArea({ productId }: ProductAreaProps) {
 		getProduct();
 	}, [productId]);
 
+	const gridStyle = {
+		display: 'grid',
+		gridTemplateColumns: '8fr 7fr',
+		gap: '2rem',
+		marginBottom: '6rem',
+	};
+
 	return (
-		<Container size={'xl'}>
+		<Container size={'xl'} maw={1200}>
 			{loading ? (
 				<Loader />
 			) : !product ? (
 				<Text>Product not found</Text>
 			) : (
 				<>
-					<Grid gutter="xl" justify="space-between" align="stretch" mb="xl">
-						<Grid.Col span={7}>
-							<Center>
-								<Paper radius="lg" withBorder p={'3rem'} style={{ width: '100%' }}>
-									<Image
-										src={product.image}
-										alt="Product"
-										style={{
-											objectFit: 'contain',
-											maxHeight: '800px',
-										}}
-									/>
-									{/* </Box> */}
-								</Paper>
-							</Center>
-						</Grid.Col>
-						<Grid.Col p="none" span={5}>
-							<ProductPageMenu product={product} />
-						</Grid.Col>
-					</Grid>
+					<div style={gridStyle}>
+						<Paper radius="lg" withBorder p={'3rem'}>
+							<Image src={product.image} alt="Product" />
+						</Paper>
+						<ProductPageMenu product={product} />
+					</div>
 
 					<ProductReviews productId={productId} />
 				</>

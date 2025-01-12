@@ -32,7 +32,7 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 
 	return (
 		<Stack justify="space-between">
-			<Paper shadow="xs" p="md" ml="sm" mr="sm" mb={'2rem'}>
+			<Paper shadow="xs" p="md" ml="sm" mr="sm" mb={'2rem'} h={'100%'} w={'100%'}>
 				<Title order={1} c="#212427" pb="md">
 					{product.title}
 				</Title>
@@ -45,21 +45,21 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 				<Title order={2} c="#212427" mb="xl" pb="md">
 					$ {product.price.toFixed(2)}
 				</Title>
-				<Box style={{ height: '200px', overflowY: 'auto' }}>
-					{showDescription && (
-						<Text c="#212427" size="l">
-							{product.description}
-						</Text>
-					)}
-					<Button
-						onClick={() => setShowDescription(!showDescription)}
-						variant="subtle"
-						mt={showDescription ? 'xs' : 0}
-						pl={0}
-						pr={0}>
-						{showDescription ? 'Hide description' : 'Show description'}
-					</Button>
-				</Box>
+				{showDescription && (
+					// <Text c="#212427" size="l">
+					// 	{product.description}
+					// </Text>
+					<p>{product.description}</p>
+				)}
+
+				<Button
+					onClick={() => setShowDescription(!showDescription)}
+					variant="subtle"
+					mt={showDescription ? 'xs' : 0}
+					pl={0}
+					pr={0}>
+					{showDescription ? 'Hide description' : 'Show description'}
+				</Button>
 			</Paper>
 			<Box mt="md" ml="sm" mr="sm" mb="md">
 				<Group gap={'0px'} justify="stretch">
