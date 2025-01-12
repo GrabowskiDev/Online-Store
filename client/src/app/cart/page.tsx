@@ -1,7 +1,7 @@
 'use client';
 import { Container, Paper, Group, Button, Title } from '@mantine/core';
 import classes from './page.module.css';
-import ProductList from '@/ui/ProductList';
+import ProductList from '@/components/Product/ProductList';
 import { useEffect, useState } from 'react';
 import { IconCashRegister } from '@tabler/icons-react';
 

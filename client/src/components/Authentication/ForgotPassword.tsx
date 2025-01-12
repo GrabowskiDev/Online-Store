@@ -11,7 +11,7 @@ import {
 	TextInput,
 	Title,
 } from '@mantine/core';
-import classes from '../css/ForgotPassword.module.css';
+import classes from '@/css/ForgotPassword.module.css';
 
 interface ForgotPasswordProps {
 	onBackToLogin: () => void;

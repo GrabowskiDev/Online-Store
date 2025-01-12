@@ -5,8 +5,8 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
-import { HeaderMegaMenu } from '../ui/HeaderMegaMenu';
-import { FooterSimple } from '../ui/FooterSimple';
+import { HeaderMegaMenu } from '../components/Header/HeaderMegaMenu';
+import { FooterSimple } from '../components/Layout/FooterSimple';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',

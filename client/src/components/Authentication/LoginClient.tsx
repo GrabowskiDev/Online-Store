@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Container, Transition } from '@mantine/core';
-import { AuthenticationTitle } from '@/ui/AuthenticationTitle';
-import { ForgotPassword } from '@/ui/ForgotPassword';
+import { AuthenticationTitle } from '@/components/Authentication/AuthenticationTitle';
+import { ForgotPassword } from '@/components/Authentication/ForgotPassword';
 
 export function LoginClient() {
 	const [showForgotPassword, setShowForgotPassword] = useState(false);

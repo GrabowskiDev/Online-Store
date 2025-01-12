@@ -17,7 +17,7 @@ import {
 	UnstyledButton,
 	useMantineTheme,
 } from '@mantine/core';
-import classes from '../css/UserMenu.module.css';
+import classes from '@/css/UserMenu.module.css';
 import Cookies from 'js-cookie';
 
 interface UserMenuProps {

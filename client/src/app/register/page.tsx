@@ -1,4 +1,4 @@
-import { RegisterClient } from '@/ui/RegisterClient';
+import { RegisterClient } from '@/components/Authentication/RegisterClient';
 import classes from './page.module.css';
 
 export default function RegisterPage() {

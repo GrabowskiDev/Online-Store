@@ -1,5 +1,5 @@
 'use client';
-import ProductArea from '@/ui/ProductArea';
+import ProductArea from '@/components/Product/ProductArea';
 import classes from './page.module.css';
 import { useParams } from 'next/navigation';
 

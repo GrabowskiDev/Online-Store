@@ -2,7 +2,7 @@
 
 import { Anchor, Container, Group } from '@mantine/core';
 import { MantineLogo } from '@mantinex/mantine-logo';
-import classes from '../css/FooterSimple.module.css';
+import classes from '@/css/FooterSimple.module.css';
 
 const links = [
 	{ link: '#', label: 'Contact' },

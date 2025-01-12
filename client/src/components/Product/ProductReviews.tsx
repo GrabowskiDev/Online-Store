@@ -1,6 +1,6 @@
 import { Paper } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import AddReview from './AddReview';
+import AddReview from '../AddReview/AddReview';
 import Review from './Review';
 
 const SERVER_IP = 'http://localhost:3001/api';

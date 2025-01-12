@@ -15,7 +15,7 @@ import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import classes from '../css/AuthenticationTitle.module.css';
+import classes from '@/css/AuthenticationTitle.module.css';
 
 interface AuthenticationTitleProps {
 	onForgotPassword: () => void;

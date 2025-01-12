@@ -14,7 +14,7 @@ import {
 	Loader,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import classes from '../css/HeaderMegaMenu.module.css';
+import classes from '@/css/HeaderMegaMenu.module.css';
 import { UserMenu } from './UserMenu';
 
 const SERVER_IP = 'http://localhost:3001/api';

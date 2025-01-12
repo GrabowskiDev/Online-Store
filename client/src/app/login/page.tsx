@@ -1,4 +1,4 @@
-import { LoginClient } from '@/ui/LoginClient';
+import { LoginClient } from '@/components/Authentication/LoginClient';
 import classes from './page.module.css';
 
 export default function LoginPage() {
