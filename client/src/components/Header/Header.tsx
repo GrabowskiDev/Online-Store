@@ -12,7 +12,7 @@ import {
 	Loader,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import classes from '@/css/HeaderMegaMenu.module.css';
+import classes from '@/css/Header.module.css';
 import { UserMenu } from './UserMenu';
 import { useAuth } from '@/context/AuthContext';
 

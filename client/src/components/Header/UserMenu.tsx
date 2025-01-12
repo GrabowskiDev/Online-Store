@@ -5,7 +5,6 @@ import {
 	IconLogout,
 	IconSettings,
 	IconStar,
-	IconTrash,
 } from '@tabler/icons-react';
 import {
 	Avatar,
@@ -79,13 +78,6 @@ export function UserMenu({ onLogout }: UserMenuProps) {
 						leftSection={<IconLogout size={16} stroke={1.5} />}
 						onClick={onLogout}>
 						Logout
-					</Menu.Item>
-
-					<Menu.Divider />
-
-					<Menu.Label>Danger zone</Menu.Label>
-					<Menu.Item color="red" leftSection={<IconTrash size={16} stroke={1.5} />}>
-						Delete account
 					</Menu.Item>
 				</Menu.Dropdown>
 			</Menu>

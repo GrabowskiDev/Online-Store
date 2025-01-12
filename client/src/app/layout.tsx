@@ -5,7 +5,7 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
-import { HeaderMegaMenu } from '../components/Header/HeaderMegaMenu';
+import { HeaderMegaMenu } from '../components/Header/Header';
 import { FooterSimple } from '../components/Layout/FooterSimple';
 import { AuthProvider } from '@/context/AuthContext';
 
