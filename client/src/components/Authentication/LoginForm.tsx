@@ -14,17 +14,16 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
-import classes from '@/css/AuthenticationTitle.module.css';
+import classes from '@/css/LoginForm.module.css';
+import { useAuth } from '../../context/AuthContext';
 
-interface AuthenticationTitleProps {
+interface LoginFormProps {
 	onForgotPassword: () => void;
 }
 
-const SERVER_IP = 'http://localhost:3001/api';
-
-export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitleProps) {
+export function LoginForm({ onForgotPassword }: LoginFormProps) {
 	const router = useRouter();
+	const { login } = useAuth();
 	const [error, setError] = useState('');
 
 	const form = useForm({
@@ -47,35 +46,7 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 		const { email, password, remember } = values;
 
 		try {
-			const response = await fetch(`${SERVER_IP}/login`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ email, password }),
-			});
-
-			if (response.status == 404) {
-				setError('User not found');
-				return;
-			} else if (response.status == 401) {
-				setError('Invalid password');
-				return;
-			} else if (!response.ok) {
-				setError('Server error, try again later!');
-				return;
-			} else {
-				setError('');
-			}
-
-			const data = await response.json();
-			const { token } = data;
-
-			if (remember) {
-				Cookies.set('jwt', token, { expires: 7 }); // 7 days
-			} else {
-				Cookies.set('jwt', token); // Session cookie
-			}
+			await login(email, password, remember);
 
 			notifications.show({
 				id: 'logged-in',
@@ -89,9 +60,8 @@ export function AuthenticationTitle({ onForgotPassword }: AuthenticationTitlePro
 			});
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 			router.push('/');
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (e) {
-			setError('Something went wrong, try again later');
+		} catch {
+			setError('Invalid credentials');
 		}
 	}
 

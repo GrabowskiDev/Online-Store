@@ -198,7 +198,14 @@ app.post('/api/login', async (req, res) => {
 				process.env.SECRET_KEY,
 				{ expiresIn: '7d' }
 			);
-			res.status(200).json({ token, id: user.id });
+			const responseUser = {
+				id: user.id,
+				email: user.email,
+				username: user.username,
+				firstName: user.firstName,
+				lastName: user.lastName,
+			};
+			res.status(200).json({ token, user: responseUser });
 		} else {
 			res.status(401).send('Unauthorized');
 		}

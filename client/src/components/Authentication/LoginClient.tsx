@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Container, Transition } from '@mantine/core';
-import { AuthenticationTitle } from '@/components/Authentication/AuthenticationTitle';
+import { LoginForm } from '@/components/Authentication/LoginForm';
 import { ForgotPassword } from '@/components/Authentication/ForgotPassword';
 
 export function LoginClient() {
@@ -24,7 +24,7 @@ export function LoginClient() {
 					{showForgotPassword ? (
 						<ForgotPassword onBackToLogin={() => setShowForgotPassword(false)} />
 					) : (
-						<AuthenticationTitle onForgotPassword={() => setShowForgotPassword(true)} />
+						<LoginForm onForgotPassword={() => setShowForgotPassword(true)} />
 					)}
 				</Container>
 			)}

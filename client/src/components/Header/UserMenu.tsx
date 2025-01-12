@@ -1,6 +1,4 @@
 'use client';
-import { useEffect, useState } from 'react';
-
 import {
 	IconChevronRight,
 	IconBasketCheck,
@@ -18,50 +16,15 @@ import {
 	useMantineTheme,
 } from '@mantine/core';
 import classes from '@/css/UserMenu.module.css';
-import Cookies from 'js-cookie';
+import { useAuth } from '../../context/AuthContext';
 
 interface UserMenuProps {
-	token: string;
 	onLogout: () => void;
 }
 
-const SERVER_IP = 'http://localhost:3001/api';
-
-export function UserMenu({ token, onLogout }: UserMenuProps) {
+export function UserMenu({ onLogout }: UserMenuProps) {
 	const theme = useMantineTheme();
-
-	const [username, setUsername] = useState('');
-	const [email, setEmail] = useState('');
-
-	useEffect(() => {
-		async function getUserData() {
-			try {
-				const response = await fetch(`${SERVER_IP}/user`, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-
-				if (response.ok) {
-					const data = await response.json();
-					setUsername(data.username);
-					setEmail(data.email);
-				} else {
-					console.error('Failed to fetch user data' + token);
-				}
-			} catch (error) {
-				console.error('Failed to fetch user data:', error);
-			}
-		}
-		if (token) {
-			getUserData();
-		}
-	}, [token]);
-
-	function handleLogout() {
-		Cookies.remove('jwt');
-		onLogout();
-	}
+	const { user } = useAuth();
 
 	return (
 		<Group justify="center">
@@ -81,11 +44,11 @@ export function UserMenu({ token, onLogout }: UserMenuProps) {
 
 							<div style={{ flex: 1 }}>
 								<Text size="sm" fw={500}>
-									{username || 'Loading...'}
+									{user?.username || 'Loading...'}
 								</Text>
 
 								<Text c="dimmed" size="xs">
-									{email || 'Loading...'}
+									{user?.email || 'Loading...'}
 								</Text>
 							</div>
 
@@ -114,7 +77,7 @@ export function UserMenu({ token, onLogout }: UserMenuProps) {
 					</Menu.Item>
 					<Menu.Item
 						leftSection={<IconLogout size={16} stroke={1.5} />}
-						onClick={handleLogout}>
+						onClick={onLogout}>
 						Logout
 					</Menu.Item>
 

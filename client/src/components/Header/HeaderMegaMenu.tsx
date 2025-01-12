@@ -1,6 +1,4 @@
 'use client';
-import { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
 import {
 	Anchor,
 	Box,
@@ -16,56 +14,12 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import classes from '@/css/HeaderMegaMenu.module.css';
 import { UserMenu } from './UserMenu';
-
-const SERVER_IP = 'http://localhost:3001/api';
+import { useAuth } from '@/context/AuthContext';
 
 export function HeaderMegaMenu() {
+	const { user, logout, loading } = useAuth();
 	const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
 		useDisclosure(false);
-
-	const [token, setToken] = useState('');
-	const [userLogged, setUserLogged] = useState(false);
-	const [userLoading, setUserLoading] = useState(true);
-
-	useEffect(() => {
-		const jwtToken = Cookies.get('jwt');
-		const verifyUser = async () => {
-			if (jwtToken) {
-				try {
-					const response = await fetch(`${SERVER_IP}/verify`, {
-						method: 'GET',
-						headers: {
-							'Content-Type': 'application/json',
-							Authorization: `Bearer ${jwtToken}`,
-						},
-					});
-					if (response.ok) {
-						setUserLogged(true);
-						setToken(jwtToken);
-						setUserLoading(false);
-					} else {
-						setUserLogged(false);
-						setUserLoading(false);
-					}
-				} catch (error) {
-					console.error('Error verifying user:', error);
-					setUserLogged(false);
-					setUserLoading(false);
-				} finally {
-					setUserLoading(false);
-				}
-			} else {
-				setUserLoading(false);
-			}
-		};
-
-		verifyUser();
-	}, []);
-
-	const handleLogout = () => {
-		setToken('');
-		setUserLogged(false);
-	};
 
 	return (
 		<Box pb={120}>
@@ -87,12 +41,13 @@ export function HeaderMegaMenu() {
 					</Group>
 
 					<Group visibleFrom="sm">
-						{userLoading ? (
+						{loading ? (
 							<Loader color="blue" size="lg" type="dots" />
 						) : (
 							<>
-								{userLogged && <UserMenu token={token} onLogout={handleLogout} />}
-								{!userLogged && (
+								{user ? (
+									<UserMenu onLogout={logout} />
+								) : (
 									<>
 										<Anchor href="/login">
 											<Button variant="default">Log in</Button>
@@ -134,8 +89,9 @@ export function HeaderMegaMenu() {
 					<Divider my="sm" />
 
 					<Group justify="center" grow pb="xl" px="md">
-						{userLogged && <UserMenu token={token} onLogout={handleLogout} />}
-						{!userLogged && (
+						{user ? (
+							<UserMenu onLogout={logout} />
+						) : (
 							<>
 								<Anchor href="/login">
 									<Button variant="default">Log in</Button>

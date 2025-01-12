@@ -1,7 +1,4 @@
 @token= {{login.response.body.token}}
-@userId= {{login.response.body.id}}
-
-
 
 ####################################
 # Register user
