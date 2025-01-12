@@ -11,17 +11,7 @@ import {
 import { useCounter } from '@mantine/hooks';
 import { IconMinus, IconPlus } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-
-interface Product {
-	id: number;
-	title: string;
-	price: number;
-	description: string;
-	category: string;
-	image: string;
-	rating: { rate: number; count: number };
-	quantity: number;
-}
+import { Product } from '@/config/types';
 
 interface ProductListElementProps {
 	product: Product;

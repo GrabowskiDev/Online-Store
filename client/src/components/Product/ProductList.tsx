@@ -1,16 +1,6 @@
 import { Group } from '@mantine/core';
 import ProductListElement from './ProductListElement';
-
-interface Product {
-	id: number;
-	title: string;
-	price: number;
-	description: string;
-	category: string;
-	image: string;
-	rating: { rate: number; count: number };
-	quantity: number;
-}
+import { Product } from '@/config/types';
 
 interface ProductListProps {
 	list: Product[];

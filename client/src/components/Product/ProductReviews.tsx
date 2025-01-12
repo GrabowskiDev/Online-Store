@@ -2,22 +2,11 @@ import { Paper } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import AddReview from '../AddReview/AddReview';
 import Review from './Review';
-
-const SERVER_IP = 'http://localhost:3001/api';
-
-interface Review {
-	id: number;
-	userId: number;
-	productId: number;
-	text: string;
-	rating: number;
-	createdAt: string;
-	updatedAt: string;
-	username: string;
-}
+import { SERVER_IP } from '@/config/config';
+import { Review as ReviewType } from '@/config/types';
 
 export default function ProductReviews({ productId }: { productId: number }) {
-	const [reviews, setReviews] = useState<Review[]>([]);
+	const [reviews, setReviews] = useState<ReviewType[]>([]);
 
 	useEffect(() => {
 		try {

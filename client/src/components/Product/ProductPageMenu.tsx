@@ -20,17 +20,10 @@ import {
 	IconShoppingCart,
 } from '@tabler/icons-react';
 import { useState } from 'react';
+import { Product } from '@/config/types';
 
 type ProductPageMenuProps = {
-	product: {
-		id: number;
-		title: string;
-		price: number;
-		description: string;
-		category: string;
-		image: string;
-		rating: { rate: number; count: number };
-	};
+	product: Product;
 };
 
 export default function ProductPageMenu({ product }: ProductPageMenuProps) {
