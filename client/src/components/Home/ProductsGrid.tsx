@@ -1,5 +1,5 @@
 'use client';
-import { SimpleGrid } from '@mantine/core';
+import { SimpleGrid, Loader, Center } from '@mantine/core';
 import ProductPreview from './ProductPreview';
 import { Product } from '@/config/types';
 import { fetchAllProducts } from '@/utils/api';
@@ -14,12 +14,15 @@ interface ProductsGridProps {
 export default function ProductsGrid({ search, categories, sort }: ProductsGridProps) {
 	const [allProducts, setAllProducts] = useState<Product[]>([]);
 	const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchProducts = async () => {
+			setLoading(true);
 			const data = await fetchAllProducts();
 			setAllProducts(data);
 			setFilteredProducts(data);
+			setLoading(false);
 		};
 
 		fetchProducts();
@@ -64,6 +67,14 @@ export default function ProductsGrid({ search, categories, sort }: ProductsGridP
 
 		setFilteredProducts(products);
 	}, [search, categories, sort, allProducts]);
+
+	if (loading) {
+		return (
+			<Center style={{ height: '20vh' }}>
+				<Loader />
+			</Center>
+		);
+	}
 
 	return (
 		<SimpleGrid cols={2} verticalSpacing="xl" spacing="xl">
