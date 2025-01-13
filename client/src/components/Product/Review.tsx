@@ -47,7 +47,7 @@ export default function Review({ userId, rating, reviewText }: ReviewProps) {
 				<Title>{username}</Title>
 			</Group>
 
-			<Rating value={rating} readOnly mt="md" />
+			<Rating value={rating} fractions={2} readOnly mt="md" />
 
 			<Text mt="md">{reviewText}</Text>
 		</Card>
