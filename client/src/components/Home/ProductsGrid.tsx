@@ -12,53 +12,62 @@ interface ProductsGridProps {
 }
 
 export default function ProductsGrid({ search, categories, sort }: ProductsGridProps) {
-	const [products, setProducts] = useState<Product[]>([]);
+	const [allProducts, setAllProducts] = useState<Product[]>([]);
+	const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
 	useEffect(() => {
-		fetchAllProducts().then((data) => setProducts(data));
+		const fetchProducts = async () => {
+			const data = await fetchAllProducts();
+			setAllProducts(data);
+			setFilteredProducts(data);
+		};
+
+		fetchProducts();
+	}, []);
+
+	useEffect(() => {
+		let products = [...allProducts];
 
 		if (search) {
-			setProducts((prev) =>
-				prev.filter((product) =>
-					product.title.toLowerCase().includes(search.toLowerCase()),
-				),
+			products = products.filter((product) =>
+				product.title.toLowerCase().includes(search.toLowerCase()),
 			);
 		}
 
 		if (categories.length > 0) {
-			setProducts((prev) =>
-				prev.filter((product) => categories.includes(product.category)),
-			);
+			products = products.filter((product) => categories.includes(product.category));
 		}
 
 		if (sort === 'A-Z') {
-			setProducts((prev) => [...prev].sort((a, b) => a.title.localeCompare(b.title)));
+			products = products.sort((a, b) => a.title.localeCompare(b.title));
 		}
 
 		if (sort === 'Z-A') {
-			setProducts((prev) => [...prev].sort((a, b) => b.title.localeCompare(a.title)));
+			products = products.sort((a, b) => b.title.localeCompare(a.title));
 		}
 
 		if (sort === 'Price ascending') {
-			setProducts((prev) => [...prev].sort((a, b) => a.price - b.price));
+			products = products.sort((a, b) => a.price - b.price);
 		}
 
 		if (sort === 'Price descending') {
-			setProducts((prev) => [...prev].sort((a, b) => b.price - a.price));
+			products = products.sort((a, b) => b.price - a.price);
 		}
 
 		if (sort === 'Rating ascending') {
-			setProducts((prev) => [...prev].sort((a, b) => a.rating.rate - b.rating.rate));
+			products = products.sort((a, b) => a.rating.rate - b.rating.rate);
 		}
 
 		if (sort === 'Rating descending') {
-			setProducts((prev) => [...prev].sort((a, b) => b.rating.rate - a.rating.rate));
+			products = products.sort((a, b) => b.rating.rate - a.rating.rate);
 		}
-	}, [search, categories, sort]);
+
+		setFilteredProducts(products);
+	}, [search, categories, sort, allProducts]);
 
 	return (
 		<SimpleGrid cols={2} verticalSpacing="xl" spacing="xl">
-			{products.map((product) => (
+			{filteredProducts.map((product) => (
 				<ProductPreview key={product.id} product={product} />
 			))}
 		</SimpleGrid>
