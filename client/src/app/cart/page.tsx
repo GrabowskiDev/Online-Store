@@ -9,11 +9,6 @@ import { SERVER_IP } from '@/config/config';
 import { notifications } from '@mantine/notifications';
 import { fetchProduct } from '@/utils/api';
 
-interface CartProduct {
-	id: number;
-	quantity: number;
-}
-
 interface Product {
 	id: number;
 	title: string;
@@ -26,9 +21,9 @@ interface Product {
 }
 
 export default function CartPage() {
-	const [cart, setCart] = useState<CartProduct[]>([]);
 	const [productList, setProductList] = useState<Product[]>([]);
 	const [totalPrice, setTotalPrice] = useState(0);
+	const [cartFetched, setCartFetched] = useState(false);
 	const { token, loading } = useAuth();
 
 	useEffect(() => {
@@ -41,53 +36,47 @@ export default function CartPage() {
 			return;
 		}
 
-		const fetchCart = async () => {
-			try {
-				const response = await fetch(`${SERVER_IP}/cart`, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${token}`,
-					},
-				});
+		if (!loading && token && !cartFetched) {
+			const fetchCart = async () => {
+				try {
+					const response = await fetch(`${SERVER_IP}/cart`, {
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					});
+					if (!response.ok) {
+						throw new Error('Failed to fetch cart');
+					}
 
-				if (!response.ok) {
-					throw new Error('Failed to fetch cart');
+					const data = await response.json();
+
+					if (!Array.isArray(data)) {
+						throw new Error('Cart data is not an array');
+					}
+
+					setCartFetched(true);
+
+					// Fetch product details based on cart items
+					const productPromises = data.map(async (item) => {
+						const productData = await fetchProduct(item.productId, true);
+						return { ...productData, quantity: item.quantity };
+					});
+
+					const productsData = await Promise.all(productPromises);
+					setProductList(productsData);
+				} catch (error) {
+					console.log('Error fetching cart:', error);
+					notifications.show({
+						title: 'Error fetching cart',
+						message: 'Error fetching cart',
+						color: 'red',
+					});
 				}
+			};
 
-				const data = await response.json();
-
-				if (!Array.isArray(data)) {
-					throw new Error('Cart data is not an array');
-				}
-
-				setCart(data);
-			} catch {
-				notifications.show({
-					title: 'Error fetching cart',
-					message: 'Error fetching cart',
-					color: 'red',
-				});
-			}
-		};
-
-		const fetchProducts = async () => {
-			try {
-				const productPromises = cart.map(async (product) => {
-					const productObj = await fetchProduct(product.id);
-					return { ...productObj, quantity: product.quantity };
-				});
-				const products = await Promise.all(productPromises);
-				setProductList(products);
-			} catch (error) {
-				console.error('Error fetching products:', error);
-			}
-		};
-
-		if (token && !loading) {
-			fetchCart().then(fetchProducts);
+			fetchCart();
 		}
-	}, [token, loading, cart]);
+	}, [loading, token, cartFetched]);
 
 	useEffect(() => {
 		let total = 0;

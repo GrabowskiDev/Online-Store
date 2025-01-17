@@ -1,14 +1,16 @@
 import { SERVER_IP } from '../config/config';
 
-async function fetchProduct(productId: number) {
+async function fetchProduct(productId: number, useCache: boolean = true) {
 	try {
-		const response = await fetch(`https://fakestoreapi.com/products/${productId}`);
+		const response = await fetch(`https://fakestoreapi.com/products/${productId}`, {
+			cache: useCache ? 'default' : 'no-store',
+		});
 		if (!response.ok) {
 			throw new Error('Network response was not ok');
 		}
 		return await response.json();
 	} catch (error) {
-		console.error('Error fetching product:', error);
+		console.error('Error fetching product:' + error + 'productId:' + productId);
 		throw error;
 	}
 }
