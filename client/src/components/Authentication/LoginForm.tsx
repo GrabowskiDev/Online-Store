@@ -98,7 +98,7 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
 							key={form.key('remember')}
 							{...form.getInputProps('remember')}
 						/>
-						<Anchor component="button" size="sm" onClick={onForgotPassword}>
+						<Anchor size="sm" onClick={onForgotPassword}>
 							Forgot password?
 						</Anchor>
 					</Group>
