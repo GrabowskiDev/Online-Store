@@ -18,6 +18,7 @@ interface Product {
 	image: string;
 	rating: { rate: number; count: number };
 	quantity: number;
+	cartId: number;
 }
 
 export default function CartPage() {
@@ -59,7 +60,7 @@ export default function CartPage() {
 					// Fetch product details based on cart items
 					const productPromises = data.map(async (item) => {
 						const productData = await fetchProduct(item.productId, true);
-						return { ...productData, quantity: item.quantity };
+						return { ...productData, quantity: item.quantity, cartId: item.id };
 					});
 
 					const productsData = await Promise.all(productPromises);
