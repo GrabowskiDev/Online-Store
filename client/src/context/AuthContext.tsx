@@ -3,8 +3,14 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { SERVER_IP } from '../config/config';
 
+interface User {
+	id: number;
+	username: string;
+	email: string;
+}
+
 interface AuthContextProps {
-	user: { username: string; email: string } | null;
+	user: User | null;
 	token: string | null;
 	login: (email: string, password: string, remember: boolean) => Promise<void>;
 	logout: () => void;
@@ -14,7 +20,7 @@ interface AuthContextProps {
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-	const [user, setUser] = useState<{ username: string; email: string } | null>(null);
+	const [user, setUser] = useState<User | null>(null);
 	const [token, setToken] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 

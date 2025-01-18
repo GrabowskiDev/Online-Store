@@ -329,6 +329,47 @@ app.post('/api/reviews', verifyToken, async (req, res) => {
 	}
 });
 
+// Delete review
+app.delete('/api/reviews/:id', verifyToken, async (req, res) => {
+	try {
+		const review = await Review.findOne({
+			where: {
+				id: req.params.id,
+				userId: req.userId,
+			},
+		});
+		if (!review) {
+			return res.status(404).send('Review not found');
+		}
+		await review.destroy();
+		res.status(204).send();
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+// Modify review
+app.put('/api/reviews/:id', verifyToken, async (req, res) => {
+	const { text, rating } = req.body;
+	try {
+		const review = await Review.findOne({
+			where: {
+				id: req.params.id,
+				userId: req.userId,
+			},
+		});
+		if (!review) {
+			return res.status(404).send('Review not found');
+		}
+		review.text = text;
+		review.rating = rating;
+		await review.save();
+		res.status(204).send();
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
 // Add product to cart
 app.post('/api/cart', verifyToken, async (req, res) => {
 	try {
