@@ -28,11 +28,18 @@ import { useRouter } from 'next/navigation';
 
 type ProductPageMenuProps = {
 	product: Product;
+	rating: number;
+	reviews_amount: number;
 };
 
-export default function ProductPageMenu({ product }: ProductPageMenuProps) {
+export default function ProductPageMenu({
+	product,
+	rating,
+	reviews_amount,
+}: ProductPageMenuProps) {
 	const [value, { increment, decrement }] = useCounter(1, { min: 1, max: 10 });
 	const [showDescription, setShowDescription] = useState(false);
+
 	const { token } = useAuth();
 	const router = useRouter();
 
@@ -78,9 +85,9 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 					{product.title}
 				</Title>
 				<Group mb="md">
-					<Rating value={product.rating.rate} fractions={4} readOnly color="#FFD700" />
+					<Rating value={rating} fractions={4} readOnly color="#FFD700" />
 					<Text size="sm" c="#212427">
-						{product.rating.count} reviews
+						{reviews_amount} reviews
 					</Text>
 				</Group>
 				<Title order={2} c="#212427" mb="xl" pb="md">

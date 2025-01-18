@@ -15,6 +15,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { SERVER_IP } from '@/config/config';
 import { debounce } from '@/utils/debounce';
 import { useAuth } from '@/context/AuthContext';
+import Link from 'next/link';
 
 interface Product {
 	id: number;
@@ -88,13 +89,15 @@ export default function ProductListElement({ product }: ProductListElementProps)
 		<>
 			<Paper p="md" shadow="xs" w={'100%'}>
 				<Group justify="space-between">
-					<Group align="top" gap="xl">
-						<Image src={product.image} alt={'image'} h={'100%'} w={'4rem'} />
-						<Stack>
-							<Title>{product.title}</Title>
-							<Text>$ {price.toFixed(2)}</Text>
-						</Stack>
-					</Group>
+					<Link href={`/product/${product.id}`} passHref>
+						<Group align="top" gap="xl">
+							<Image src={product.image} alt={'image'} h={'100%'} w={'4rem'} />
+							<Stack>
+								<Title>{product.title}</Title>
+								<Text>$ {price.toFixed(2)}</Text>
+							</Stack>
+						</Group>
+					</Link>
 					<Group>
 						<ActionIcon variant="default" size="xl" radius="md" onClick={decrement}>
 							<IconMinus color="var(--mantine-color-gray-text)" />
