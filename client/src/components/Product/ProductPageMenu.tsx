@@ -24,6 +24,7 @@ import { Product } from '@/config/types';
 import { useAuth } from '@/context/AuthContext';
 import { notifications } from '@mantine/notifications';
 import { addProductToCart } from '@/utils/api';
+import { useRouter } from 'next/navigation';
 
 type ProductPageMenuProps = {
 	product: Product;
@@ -33,6 +34,7 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 	const [value, { increment, decrement }] = useCounter(1, { min: 1, max: 10 });
 	const [showDescription, setShowDescription] = useState(false);
 	const { token } = useAuth();
+	const router = useRouter();
 
 	const addToCart = async () => {
 		if (!token) {
@@ -62,6 +64,11 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 				throw error;
 			}
 		}
+	};
+
+	const buyNow = async () => {
+		await addToCart();
+		router.push('/cart');
 	};
 
 	return (
@@ -137,6 +144,7 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 					rightSection={<IconCashRegister size={24} style={{ color: 'white' }} />}
 					leftSection={<span />}
 					variant="filled"
+					onClick={buyNow}
 					mt="md">
 					BUY NOW
 				</Button>
