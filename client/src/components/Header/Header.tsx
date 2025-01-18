@@ -25,21 +25,10 @@ function Header() {
 	return (
 		<Box pb={120}>
 			<header className={classes.header}>
-				<Group justify="space-evenly" h="100%">
+				<Group justify="space-between" mx={'4rem'} h="100%">
 					<Anchor href="/">
 						<Image src="/next.svg" alt="Logo" h={20} w="auto" />
 					</Anchor>
-					<Group h="100%" gap={0} visibleFrom="sm">
-						<a href="#" className={classes.link}>
-							Home
-						</a>
-						<a href="#" className={classes.link}>
-							Learn
-						</a>
-						<a href="#" className={classes.link}>
-							Academy
-						</a>
-					</Group>
 
 					<Group visibleFrom="sm">
 						{loading ? (
