@@ -37,10 +37,9 @@ export function UserMenu({ onLogout }: UserMenuProps) {
 				<Menu.Target>
 					<UnstyledButton className={classes.user}>
 						<Group>
-							<Avatar
-								src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
-								radius="xl"
-							/>
+							<Avatar color="blue" radius="xl">
+								{user?.username.charAt(0).toUpperCase()}
+							</Avatar>
 
 							<div style={{ flex: 1 }}>
 								<Text size="sm" fw={500}>

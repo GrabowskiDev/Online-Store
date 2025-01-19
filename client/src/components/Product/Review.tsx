@@ -95,7 +95,7 @@ export default function Review({
 			<Group justify="space-between">
 				<Group>
 					<Avatar color="blue" radius="xl">
-						{'A'}
+						{username.charAt(0).toUpperCase()}
 					</Avatar>
 					<Title>{username}</Title>
 				</Group>
