@@ -15,19 +15,19 @@ type ProductAreaProps = {
 
 export default function ProductArea({ productId }: ProductAreaProps) {
 	const [product, setProduct] = useState<Product | null>(null);
-	const [loading, setLoading] = useState(true);
+	const [productLoading, setProductLoading] = useState(true);
 	const [reviews, setReviews] = useState<ReviewType[]>([]);
 	const [rating, setRating] = useState(0);
-	const { user, token } = useAuth();
+	const { user, loading, token } = useAuth();
 
 	useEffect(() => {
 		const getProduct = async () => {
 			try {
 				const data = await fetchProduct(productId);
 				setProduct(data);
-				setLoading(false);
+				setProductLoading(false);
 			} catch {
-				setLoading(false);
+				setProductLoading(false);
 			}
 		};
 
@@ -52,10 +52,7 @@ export default function ProductArea({ productId }: ProductAreaProps) {
 					return 0;
 				},
 			);
-			console.log('sorted review', sortedReviews);
 			setReviews(sortedReviews);
-			console.log('reviews', reviews);
-			calculateRating();
 		} catch (error) {
 			console.error('Error fetching product:', error);
 		}
@@ -103,9 +100,10 @@ export default function ProductArea({ productId }: ProductAreaProps) {
 	}
 
 	useEffect(() => {
-		fetchReviews();
-		console.log('fetching reviews');
-	}, []);
+		if (!loading) {
+			fetchReviews();
+		}
+	}, [productId, user, loading]);
 
 	useEffect(() => {
 		calculateRating();
@@ -113,7 +111,7 @@ export default function ProductArea({ productId }: ProductAreaProps) {
 
 	return (
 		<Container size={'xl'} maw={1200}>
-			{loading ? (
+			{productLoading ? (
 				<Loader />
 			) : !product ? (
 				<Text>Product not found</Text>
