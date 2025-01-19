@@ -43,18 +43,19 @@ export default function ProductArea({ productId }: ProductAreaProps) {
 
 	const fetchReviews = async () => {
 		try {
-			fetch(`${SERVER_IP}/reviews/product/${product?.id}`)
-				.then((res) => res.json())
-				.then((data) => {
-					const sortedReviews = data.sort((a: ReviewType, b: ReviewType) => {
-						if (a.userId === user?.id) return -1;
-						if (b.userId === user?.id) return 1;
-						return 0;
-					});
-
-					setReviews(sortedReviews);
-				})
-				.then(() => calculateRating());
+			const response = await fetch(`${SERVER_IP}/reviews/product/${productId}`);
+			const data = await response.json();
+			const sortedReviews = data.sort(
+				(a: { userId: number | undefined }, b: { userId: number | undefined }) => {
+					if (a.userId === user?.id) return -1;
+					if (b.userId === user?.id) return 1;
+					return 0;
+				},
+			);
+			console.log('sorted review', sortedReviews);
+			setReviews(sortedReviews);
+			console.log('reviews', reviews);
+			calculateRating();
 		} catch (error) {
 			console.error('Error fetching product:', error);
 		}
@@ -97,12 +98,14 @@ export default function ProductArea({ productId }: ProductAreaProps) {
 		for (let i = 0; i < reviews.length; i++) {
 			sum += reviews[i].rating;
 		}
+		console.log('calc');
 		setRating(sum / reviews.length);
 	}
 
 	useEffect(() => {
 		fetchReviews();
-	});
+		console.log('fetching reviews');
+	}, []);
 
 	useEffect(() => {
 		calculateRating();

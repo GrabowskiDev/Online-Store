@@ -1,4 +1,4 @@
-import { Card, Image, Text, Stack, Title, Button } from '@mantine/core';
+import { Card, Image, Text, Stack, Title, Button, Group, Rating } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { Product } from '@/config/types';
 import Link from 'next/link';
@@ -50,6 +50,12 @@ export default function ProductPreview({ product }: { product: Product }) {
 				<Link href={`/product/${product.id}`}>
 					<Stack gap="sm" mt="md">
 						<Title order={3}>{product.title}</Title>
+						<Group>
+							<Rating fractions={4} value={product.rating.rate} readOnly />
+							<Text size="sm" color="dimmed">
+								({product.rating.count})
+							</Text>
+						</Group>
 						<Text w={500} size="lg" color="blue">
 							${product.price.toFixed(2)}
 						</Text>
