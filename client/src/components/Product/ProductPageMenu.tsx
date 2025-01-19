@@ -66,6 +66,7 @@ export default function ProductPageMenu({
 					message: `${product.title} has been added to your cart in quantity of ${value}`,
 					color: 'green',
 				});
+				return response;
 			} catch (error) {
 				console.error('Error adding product to cart:', error);
 				throw error;
@@ -74,8 +75,10 @@ export default function ProductPageMenu({
 	};
 
 	const buyNow = async () => {
-		await addToCart();
-		router.push('/cart');
+		const response = await addToCart();
+		if (response && response.ok) {
+			router.push('/cart');
+		}
 	};
 
 	return (

@@ -69,7 +69,11 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
 				loading: true,
 				withBorder: true,
 			});
-			router.back();
+			if (document.referrer.includes('/register')) {
+				router.push('/');
+			} else {
+				router.back();
+			}
 		} catch {
 			setError('Invalid credentials');
 		}
