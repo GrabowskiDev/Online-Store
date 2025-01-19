@@ -11,6 +11,7 @@ import {
 	TextInput,
 	Title,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import classes from '@/css/ForgotPassword.module.css';
 
 interface ForgotPasswordProps {
@@ -18,6 +19,18 @@ interface ForgotPasswordProps {
 }
 
 export function ForgotPassword({ onBackToLogin }: ForgotPasswordProps) {
+	function handleResetPassword() {
+		notifications.show({
+			id: 'password-forgot',
+			withCloseButton: true,
+			title: 'Just make a new account!',
+			message: 'AND REMEMBER YOUR PASSWORD THIS TIME!',
+			loading: false,
+			withBorder: true,
+			color: 'red',
+		});
+	}
+
 	return (
 		<Container size={460} my={30}>
 			<Title className={classes.title} ta="center">
@@ -40,7 +53,9 @@ export function ForgotPassword({ onBackToLogin }: ForgotPasswordProps) {
 							<Box ml={5}>Back to the login page</Box>
 						</Center>
 					</Anchor>
-					<Button className={classes.control}>Reset password</Button>
+					<Button className={classes.control} onClick={handleResetPassword}>
+						Reset password
+					</Button>
 				</Group>
 			</Paper>
 		</Container>

@@ -1,34 +1,36 @@
 import { Paper } from '@mantine/core';
-import { useEffect, useState } from 'react';
 import AddReview from '../AddReview/AddReview';
 import Review from './Review';
-import { SERVER_IP } from '@/config/config';
 import { Review as ReviewType } from '@/config/types';
+import { useAuth } from '@/context/AuthContext';
 
-export default function ProductReviews({ productId }: { productId: number }) {
-	const [reviews, setReviews] = useState<ReviewType[]>([]);
+interface ProductReviewsProps {
+	productId: number;
+	reviews: ReviewType[];
+	deleteReview: (reviewId: number, token: string | null) => Promise<void>;
+	fetchReviews: () => Promise<void>;
+}
 
-	useEffect(() => {
-		try {
-			fetch(`${SERVER_IP}/reviews/product/${productId}`)
-				.then((res) => res.json())
-				.then((data) => {
-					setReviews(data);
-				});
-		} catch (error) {
-			console.error('Error fetching product:', error);
-		}
-	}, []);
-
+export default function ProductReviews({
+	productId,
+	reviews,
+	deleteReview,
+	fetchReviews,
+}: ProductReviewsProps) {
+	const { user, token } = useAuth();
 	return (
 		<Paper radius="lg" withBorder p={'3rem'}>
-			<AddReview productId={productId} />
+			<AddReview productId={productId} onReviewAdded={fetchReviews} />
 			{reviews.map((review) => (
 				<Review
 					key={review.id}
+					reviewId={review.id}
 					userId={review.userId}
 					rating={review.rating}
 					reviewText={review.text}
+					onDelete={() => deleteReview(review.id, token).then(fetchReviews)}
+					showOptions={review.userId === user?.id}
+					onReviewUpdated={fetchReviews}
 				/>
 			))}
 		</Paper>

@@ -24,15 +24,24 @@ import { Product } from '@/config/types';
 import { useAuth } from '@/context/AuthContext';
 import { notifications } from '@mantine/notifications';
 import { addProductToCart } from '@/utils/api';
+import { useRouter } from 'next/navigation';
 
 type ProductPageMenuProps = {
 	product: Product;
+	rating: number;
+	reviews_amount: number;
 };
 
-export default function ProductPageMenu({ product }: ProductPageMenuProps) {
+export default function ProductPageMenu({
+	product,
+	rating,
+	reviews_amount,
+}: ProductPageMenuProps) {
 	const [value, { increment, decrement }] = useCounter(1, { min: 1, max: 10 });
 	const [showDescription, setShowDescription] = useState(false);
+
 	const { token } = useAuth();
+	const router = useRouter();
 
 	const addToCart = async () => {
 		if (!token) {
@@ -57,10 +66,18 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 					message: `${product.title} has been added to your cart in quantity of ${value}`,
 					color: 'green',
 				});
+				return response;
 			} catch (error) {
 				console.error('Error adding product to cart:', error);
 				throw error;
 			}
+		}
+	};
+
+	const buyNow = async () => {
+		const response = await addToCart();
+		if (response && response.ok) {
+			router.push('/cart');
 		}
 	};
 
@@ -71,9 +88,9 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 					{product.title}
 				</Title>
 				<Group mb="md">
-					<Rating value={product.rating.rate} fractions={4} readOnly color="#FFD700" />
+					<Rating value={rating} fractions={4} readOnly color="#FFD700" />
 					<Text size="sm" c="#212427">
-						{product.rating.count} reviews
+						{reviews_amount} reviews
 					</Text>
 				</Group>
 				<Title order={2} c="#212427" mb="xl" pb="md">
@@ -137,6 +154,7 @@ export default function ProductPageMenu({ product }: ProductPageMenuProps) {
 					rightSection={<IconCashRegister size={24} style={{ color: 'white' }} />}
 					leftSection={<span />}
 					variant="filled"
+					onClick={buyNow}
 					mt="md">
 					BUY NOW
 				</Button>

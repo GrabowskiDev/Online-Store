@@ -12,7 +12,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import classes from '@/css/LoginForm.module.css';
 import { useAuth } from '../../context/AuthContext';
@@ -23,8 +23,19 @@ interface LoginFormProps {
 
 export function LoginForm({ onForgotPassword }: LoginFormProps) {
 	const router = useRouter();
-	const { login } = useAuth();
+	const { login, token, loading } = useAuth();
 	const [error, setError] = useState('');
+
+	useEffect(() => {
+		if (!loading && token) {
+			notifications.show({
+				title: 'You are already logged in',
+				message: 'Redirecting to main page',
+				color: 'blue',
+			});
+			router.push('/');
+		}
+	}, [loading]);
 
 	const form = useForm({
 		mode: 'uncontrolled',
@@ -58,8 +69,11 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
 				loading: true,
 				withBorder: true,
 			});
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-			router.push('/');
+			if (document.referrer.includes('/register')) {
+				router.push('/');
+			} else {
+				router.back();
+			}
 		} catch {
 			setError('Invalid credentials');
 		}
@@ -98,7 +112,7 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
 							key={form.key('remember')}
 							{...form.getInputProps('remember')}
 						/>
-						<Anchor component="button" size="sm" onClick={onForgotPassword}>
+						<Anchor size="sm" onClick={onForgotPassword}>
 							Forgot password?
 						</Anchor>
 					</Group>

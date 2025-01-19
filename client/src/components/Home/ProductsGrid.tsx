@@ -1,14 +1,20 @@
 'use client';
 import { SimpleGrid, Loader, Center } from '@mantine/core';
 import ProductPreview from './ProductPreview';
-import { Product } from '@/config/types';
+import { Product, Review as ReviewType } from '@/config/types';
 import { fetchAllProducts } from '@/utils/api';
 import { useState, useEffect } from 'react';
+import { SERVER_IP } from '@/config/config';
 
 interface ProductsGridProps {
 	search: string;
 	categories: string[];
 	sort: string | null;
+}
+
+interface Rating {
+	rate: number;
+	count: number;
 }
 
 export default function ProductsGrid({ search, categories, sort }: ProductsGridProps) {
@@ -20,13 +26,44 @@ export default function ProductsGrid({ search, categories, sort }: ProductsGridP
 		const fetchProducts = async () => {
 			setLoading(true);
 			const data = await fetchAllProducts();
-			setAllProducts(data);
-			setFilteredProducts(data);
+
+			const productsWithRatings = await Promise.all(
+				data.map(async (product: Product) => {
+					product.rating = { rate: 0, count: 0 };
+					const response = await fetchReviews(product.id);
+					product.rating = response;
+					return product;
+				}),
+			);
+
+			setAllProducts(productsWithRatings);
+			setFilteredProducts(productsWithRatings);
 			setLoading(false);
 		};
 
 		fetchProducts();
 	}, []);
+
+	const fetchReviews = async (productId: number): Promise<Rating> => {
+		function calculateRating(reviews: ReviewType[]): number {
+			let sum = 0;
+			if (reviews.length === 0) return 0;
+			for (let i = 0; i < reviews.length; i++) {
+				sum += reviews[i].rating;
+			}
+			return sum / reviews.length;
+		}
+
+		try {
+			const response = await fetch(`${SERVER_IP}/reviews/product/${productId}`);
+			const data: ReviewType[] = await response.json();
+			const rating = { rate: calculateRating(data), count: data.length };
+			return rating;
+		} catch (error) {
+			console.error('Error fetching product:', error);
+			return { rate: 0, count: 0 };
+		}
+	};
 
 	useEffect(() => {
 		let products = [...allProducts];
