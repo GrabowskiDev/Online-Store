@@ -7,7 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 interface ProductReviewsProps {
 	productId: number;
 	reviews: ReviewType[];
-	deleteReview: (reviewId: number) => Promise<void>;
+	deleteReview: (reviewId: number, token: string | null) => Promise<void>;
 	fetchReviews: () => Promise<void>;
 }
 
@@ -17,7 +17,7 @@ export default function ProductReviews({
 	deleteReview,
 	fetchReviews,
 }: ProductReviewsProps) {
-	const { user } = useAuth();
+	const { user, token } = useAuth();
 	return (
 		<Paper radius="lg" withBorder p={'3rem'}>
 			<AddReview productId={productId} onReviewAdded={fetchReviews} />
@@ -28,7 +28,7 @@ export default function ProductReviews({
 					userId={review.userId}
 					rating={review.rating}
 					reviewText={review.text}
-					onDelete={() => deleteReview(review.id)}
+					onDelete={() => deleteReview(review.id, token).then(fetchReviews)}
 					showOptions={review.userId === user?.id}
 					onReviewUpdated={fetchReviews}
 				/>

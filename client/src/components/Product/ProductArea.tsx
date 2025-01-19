@@ -3,11 +3,10 @@ import { Container, Image, Loader, Text, Paper } from '@mantine/core';
 import ProductPageMenu from './ProductPageMenu';
 import { useEffect, useState } from 'react';
 import ProductReviews from './ProductReviews';
-import { fetchProduct } from '@/utils/api';
+import { fetchProduct, deleteReview } from '@/utils/api';
 import { Product, Review as ReviewType } from '@/config/types';
 import { SERVER_IP } from '@/config/config';
 import { useAuth } from '@/context/AuthContext';
-import { notifications } from '@mantine/notifications';
 
 type ProductAreaProps = {
 	productId: number;
@@ -18,7 +17,7 @@ export default function ProductArea({ productId }: ProductAreaProps) {
 	const [productLoading, setProductLoading] = useState(true);
 	const [reviews, setReviews] = useState<ReviewType[]>([]);
 	const [rating, setRating] = useState(0);
-	const { user, loading, token } = useAuth();
+	const { user, loading } = useAuth();
 
 	useEffect(() => {
 		const getProduct = async () => {
@@ -55,38 +54,6 @@ export default function ProductArea({ productId }: ProductAreaProps) {
 			setReviews(sortedReviews);
 		} catch (error) {
 			console.error('Error fetching product:', error);
-		}
-	};
-
-	const deleteReview = async (reviewId: number) => {
-		try {
-			const response = await fetch(`${SERVER_IP}/reviews/${reviewId}`, {
-				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			if (response.ok) {
-				setReviews(reviews.filter((review) => review.id !== reviewId));
-				notifications.show({
-					title: 'Review deleted',
-					message: 'Your review has been deleted',
-					color: 'green',
-				});
-			} else {
-				notifications.show({
-					title: 'Error',
-					message: 'An error has occured',
-					color: 'red',
-				});
-			}
-		} catch {
-			notifications.show({
-				title: 'Error',
-				message: 'An error has occured',
-				color: 'red',
-			});
 		}
 	};
 
