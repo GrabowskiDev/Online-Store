@@ -17,6 +17,7 @@ import {
 } from '@mantine/core';
 import classes from '@/css/UserMenu.module.css';
 import { useAuth } from '../../context/AuthContext';
+import { notifications } from '@mantine/notifications';
 
 interface UserMenuProps {
 	onLogout: () => void;
@@ -67,18 +68,40 @@ export function UserMenu({ onLogout }: UserMenuProps) {
 					<Menu.Item
 						leftSection={
 							<IconBasketCheck size={16} stroke={1.5} color={theme.colors.blue[6]} />
-						}>
+						}
+						onClick={() => {
+							notifications.show({
+								title: 'This feature is not implemented yet',
+								color: 'red',
+								message: undefined,
+							});
+						}}>
 						Orders
 					</Menu.Item>
 					<Menu.Item
 						leftSection={
 							<IconStar size={16} stroke={1.5} color={theme.colors.yellow[6]} />
-						}>
+						}
+						onClick={() => {
+							notifications.show({
+								title: 'This feature is not implemented yet',
+								color: 'red',
+								message: undefined,
+							});
+						}}>
 						Reviews
 					</Menu.Item>
 
 					<Menu.Label>Settings</Menu.Label>
-					<Menu.Item leftSection={<IconSettings size={16} stroke={1.5} />}>
+					<Menu.Item
+						leftSection={<IconSettings size={16} stroke={1.5} />}
+						onClick={() => {
+							notifications.show({
+								title: 'This feature is not implemented yet',
+								color: 'red',
+								message: undefined,
+							});
+						}}>
 						Account settings
 					</Menu.Item>
 					<Menu.Item

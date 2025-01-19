@@ -100,7 +100,14 @@ export default function CartPage() {
 						h={44}
 						rightSection={<IconCashRegister size={24} style={{ color: 'white' }} />}
 						leftSection={<span />}
-						variant="filled">
+						variant="filled"
+						onClick={() => {
+							notifications.show({
+								title: 'This feature is not implemented yet',
+								color: 'red',
+								message: undefined,
+							});
+						}}>
 						BUY NOW
 					</Button>
 				</Group>

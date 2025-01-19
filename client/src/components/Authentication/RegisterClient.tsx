@@ -131,7 +131,7 @@ export function RegisterClient() {
 						/>
 						<TextInput
 							label="Username"
-							placeholder="StudentDebil"
+							placeholder="banana17"
 							key={form.key('username')}
 							{...form.getInputProps('username')}
 						/>
