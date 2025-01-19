@@ -14,11 +14,25 @@ import { useForm } from '@mantine/form';
 import { useRouter } from 'next/navigation';
 import { notifications } from '@mantine/notifications';
 import classes from '@/css/LoginForm.module.css';
+import { useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 const SERVER_IP = 'http://localhost:3001/api';
 
 export function RegisterClient() {
 	const router = useRouter();
+	const { token, loading } = useAuth();
+
+	useEffect(() => {
+		if (!loading && token) {
+			notifications.show({
+				title: 'You are already logged in',
+				message: 'Redirecting to main page',
+				color: 'blue',
+			});
+			router.push('/');
+		}
+	}, [loading, token, router]);
 
 	const form = useForm({
 		mode: 'uncontrolled',

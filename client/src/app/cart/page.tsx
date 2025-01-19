@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { SERVER_IP } from '@/config/config';
 import { notifications } from '@mantine/notifications';
 import { fetchProduct } from '@/utils/api';
+import { useRouter } from 'next/navigation';
 
 interface Product {
 	id: number;
@@ -26,6 +27,7 @@ export default function CartPage() {
 	const [totalPrice, setTotalPrice] = useState(0);
 	const [cartFetched, setCartFetched] = useState(false);
 	const { token, loading } = useAuth();
+	const router = useRouter();
 
 	useEffect(() => {
 		if (!token && !loading) {
@@ -34,6 +36,7 @@ export default function CartPage() {
 				message: 'Please log in or register to view your cart',
 				color: 'red',
 			});
+			router.push('/login');
 			return;
 		}
 
