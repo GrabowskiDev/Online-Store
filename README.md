@@ -5,11 +5,9 @@
 ### Client (Frontend)
 
 1. Navigate to the **client** directory:
-
-```sh
-cd client
-```
-
+    ```sh
+    cd client
+    ```
 2. Install dependencies:
     ```sh
     npm install
@@ -23,11 +21,9 @@ cd client
 ### Server (Backend)
 
 1. Navigate to the **server** directory:
-
-```sh
-cd server
-```
-
+    ```sh
+    cd server
+    ```
 2. Install dependencies:
     ```sh
     npm install
