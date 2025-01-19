@@ -39,7 +39,7 @@ export default function ReviewModal({
 				minRows={4}
 				mt="md"
 			/>
-			<Button onClick={handleSubmit} mt="md">
+			<Button onClick={handleSubmit} mt="md" disabled={!rating || !reviewText}>
 				Submit
 			</Button>
 		</Modal>

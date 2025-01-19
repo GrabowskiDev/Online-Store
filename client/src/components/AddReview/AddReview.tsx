@@ -52,10 +52,12 @@ export default function AddReview({ productId, onReviewAdded }: AddReviewProps) 
 		<>
 			<Box mb="xl">
 				<Group justify="space-between">
-					<Title>You seem to have bought this product</Title>
-					<Button variant="default" onClick={() => setIsModalOpen(true)} w={200}>
-						Add a review
-					</Button>
+					<Title>All reviews</Title>
+					{token && (
+						<Button variant="default" onClick={() => setIsModalOpen(true)} w={200}>
+							Add a review
+						</Button>
+					)}
 				</Group>
 			</Box>
 
