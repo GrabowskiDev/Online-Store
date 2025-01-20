@@ -7,7 +7,7 @@ import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import { Review as ReviewType } from '@/config/types';
 import Review from '@/components/Product/Review';
-import { Paper, Container, Group, Stack, Image, Text, Box } from '@mantine/core';
+import { Paper, Container, Group, Stack, Image, Text, Box, Title } from '@mantine/core';
 import { deleteReview } from '@/utils/api';
 
 export default function ReviewsPage() {
@@ -103,31 +103,32 @@ export default function ReviewsPage() {
 		<div className={classes.main}>
 			<Container size="xl">
 				<Paper p="xl" shadow="xs">
-					{reviewsList.map((review: ReviewType) => (
-						<Paper shadow="xs" p="md" key={review.id} mb={20}>
-							<Group justify="space-between">
-								<Stack w="20%">
-									<Image
-										src={productImages[review.productId]}
-										alt={productNames[review.productId]}
-										style={{ width: '100%', height: '100%' }}
-									/>
-									<Text>{productNames[review.productId]}</Text>
-								</Stack>
-								<Box w="70%">
-									<Review
-										reviewId={review.id}
-										userId={review.userId}
-										rating={review.rating}
-										reviewText={review.text}
-										onDelete={() => deleteReview(review.id, token).then(fetchReviews)}
-										showOptions={review.userId === user?.id}
-										onReviewUpdated={fetchReviews}
-									/>
-								</Box>
-							</Group>
-						</Paper>
-					))}
+					{reviewsList.length == 0 && <Title>This user has no reviews yet!</Title>}
+					{reviewsList.length > 0 && reviewsList.map((review: ReviewType) => (
+							<Paper shadow="xs" p="md" key={review.id} mb={20}>
+								<Group justify="space-between">
+									<Stack w="20%">
+										<Image
+											src={productImages[review.productId]}
+											alt={productNames[review.productId]}
+											style={{ width: '100%', height: '100%' }}
+										/>
+										<Text>{productNames[review.productId]}</Text>
+									</Stack>
+									<Box w="70%">
+										<Review
+											reviewId={review.id}
+											userId={review.userId}
+											rating={review.rating}
+											reviewText={review.text}
+											onDelete={() => deleteReview(review.id, token).then(fetchReviews)}
+											showOptions={review.userId === user?.id}
+											onReviewUpdated={fetchReviews}
+										/>
+									</Box>
+								</Group>
+							</Paper>
+						))}
 				</Paper>
 			</Container>
 		</div>

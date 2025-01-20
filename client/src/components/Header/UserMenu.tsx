@@ -18,6 +18,7 @@ import {
 import classes from '@/css/UserMenu.module.css';
 import { useAuth } from '../../context/AuthContext';
 import { notifications } from '@mantine/notifications';
+import { useRouter } from 'next/navigation';
 
 interface UserMenuProps {
 	onLogout: () => void;
@@ -26,6 +27,7 @@ interface UserMenuProps {
 export function UserMenu({ onLogout }: UserMenuProps) {
 	const theme = useMantineTheme();
 	const { user } = useAuth();
+	const router = useRouter();
 
 	return (
 		<Group justify="center">
@@ -62,7 +64,7 @@ export function UserMenu({ onLogout }: UserMenuProps) {
 						leftSection={
 							<IconShoppingCart size={16} stroke={1.5} color={theme.colors.blue[6]} />
 						}
-						onClick={() => (window.location.href = '/cart')}>
+						onClick={() => router.push('/cart')}>
 						Cart
 					</Menu.Item>
 					<Menu.Item
@@ -82,13 +84,7 @@ export function UserMenu({ onLogout }: UserMenuProps) {
 						leftSection={
 							<IconStar size={16} stroke={1.5} color={theme.colors.yellow[6]} />
 						}
-						onClick={() => {
-							notifications.show({
-								title: 'This feature is not implemented yet',
-								color: 'red',
-								message: undefined,
-							});
-						}}>
+						onClick={() => router.push('/reviews')}>
 						Reviews
 					</Menu.Item>
 
