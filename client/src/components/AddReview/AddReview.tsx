@@ -1,5 +1,5 @@
 'use client';
-import { Title, Button, Group, Box } from '@mantine/core';
+import { Title, Button, Group, Box, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import ReviewModal from './ReviewModal';
@@ -9,9 +9,14 @@ import { useAuth } from '@/context/AuthContext';
 interface AddReviewProps {
 	productId: number;
 	onReviewAdded: () => void;
+	userHasReviewed: boolean;
 }
 
-export default function AddReview({ productId, onReviewAdded }: AddReviewProps) {
+export default function AddReview({
+	productId,
+	onReviewAdded,
+	userHasReviewed,
+}: AddReviewProps) {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const { token } = useAuth();
 
@@ -53,10 +58,15 @@ export default function AddReview({ productId, onReviewAdded }: AddReviewProps) 
 			<Box mb="xl">
 				<Group justify="space-between">
 					<Title>All reviews</Title>
-					{token && (
+					{token && !userHasReviewed ? (
 						<Button variant="default" onClick={() => setIsModalOpen(true)} w={200}>
 							Add a review
 						</Button>
+					) : (
+						token &&
+						userHasReviewed && (
+							<Text color="dimmed">You have already reviewed this product.</Text>
+						)
 					)}
 				</Group>
 			</Box>
