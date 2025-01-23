@@ -39,6 +39,7 @@ export default function ProductReviews({
 					userId={review.userId}
 					rating={review.rating}
 					reviewText={review.text}
+					date={review.createdAt}
 					onDelete={() => deleteReview(review.id, token).then(fetchReviews)}
 					showOptions={review.userId === user?.id}
 					onReviewUpdated={fetchReviews}

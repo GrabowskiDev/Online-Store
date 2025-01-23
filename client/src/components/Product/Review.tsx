@@ -5,11 +5,13 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import ReviewModal from '../AddReview/ReviewModal';
 import { notifications } from '@mantine/notifications';
+import { format } from 'date-fns';
 
 interface ReviewProps {
 	userId: number;
 	rating: number;
 	reviewText: string;
+	date: string;
 	onDelete?: () => void;
 	onReviewUpdated: () => void;
 	showOptions?: boolean;
@@ -21,6 +23,7 @@ export default function Review({
 	reviewId,
 	rating,
 	reviewText,
+	date,
 	onDelete,
 	onReviewUpdated,
 	showOptions,
@@ -98,6 +101,9 @@ export default function Review({
 						{username.charAt(0).toUpperCase()}
 					</Avatar>
 					<Title>{username}</Title>
+					<Text size="sm" c="dimmed">
+						{format(new Date(date), 'MMMM dd, yyyy')}
+					</Text>
 				</Group>
 				{showOptions && (
 					<Group>
