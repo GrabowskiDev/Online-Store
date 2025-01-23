@@ -22,7 +22,7 @@ POST http://127.0.0.1:3001/api/login
 Content-Type: application/json
 
 {
-	"email": "admin@admin.com",
+	"email": "lgrabowski@student.agh.edu.pl",
 	"password": "pass"
 }
 
@@ -63,8 +63,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-	"userId": "2",
-	"productId": "2",
+	"userId": "1",
+	"productId": "3",
 	"rating": 5,
 	"text": "I really like this product"
 }

@@ -317,6 +317,19 @@ app.post('/api/reviews', verifyToken, async (req, res) => {
 	try {
 		const { productId, text, rating } = req.body;
 		const userId = req.userId;
+
+		// Check if the user has already reviewed this product
+		const existingReview = await Review.findOne({
+			where: {
+				userId,
+				productId,
+			},
+		});
+
+		if (existingReview) {
+			return res.status(400).send('User has already reviewed this product');
+		}
+
 		const review = await Review.create({
 			userId,
 			productId,
