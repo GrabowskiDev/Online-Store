@@ -104,7 +104,8 @@ export default function ReviewsPage() {
 			<Container size="xl">
 				<Paper p="xl" shadow="xs">
 					{reviewsList.length == 0 && <Title>This user has no reviews yet!</Title>}
-					{reviewsList.length > 0 && reviewsList.map((review: ReviewType) => (
+					{reviewsList.length > 0 &&
+						reviewsList.map((review: ReviewType) => (
 							<Paper shadow="xs" p="md" key={review.id} mb={20}>
 								<Group justify="space-between">
 									<Stack w="20%">
@@ -121,6 +122,7 @@ export default function ReviewsPage() {
 											userId={review.userId}
 											rating={review.rating}
 											reviewText={review.text}
+											date={review.createdAt}
 											onDelete={() => deleteReview(review.id, token).then(fetchReviews)}
 											showOptions={review.userId === user?.id}
 											onReviewUpdated={fetchReviews}
