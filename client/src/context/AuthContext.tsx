@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { SERVER_IP } from '../config/config';
+import { notifications } from '@mantine/notifications';
 
 interface User {
 	id: number;
@@ -82,7 +83,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 			});
 
 			if (!response.ok) {
-				throw new Error('Invalid credentials');
+				notifications.show({
+					title: 'Error logging in',
+					message: 'Invalid email or password',
+					color: 'red',
+				});
+				return Promise.reject('Invalid email or password');
 			}
 
 			const data = await response.json();
