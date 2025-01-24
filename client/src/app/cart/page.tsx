@@ -41,17 +41,21 @@ export default function CartPage() {
 		}
 
 		try {
-			const response = await fetch(`${SERVER_IP}/api/orders`, {
-				method: 'PUT',
+			const response = await fetch(`${SERVER_IP}/orders`, {
+				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 					Authorization: `Bearer ${token}`,
 				},
-				body: JSON.stringify({ products: productList }),
 			});
 
 			if (!response.ok) {
-				throw new Error('Failed to place order');
+				notifications.show({
+					title: 'Error placing order',
+					message: 'There was an error placing your order. Please try again.',
+					color: 'red',
+				});
+				return;
 			}
 			setProductList([]);
 			notifications.show({
@@ -61,7 +65,7 @@ export default function CartPage() {
 			});
 
 			// Optionally, you can clear the cart or redirect the user
-			router.push('/');
+			// router.push('/');
 		} catch (error) {
 			console.log('Error placing order:', error);
 			notifications.show({

@@ -105,6 +105,10 @@ const Cart = sequelize.define('Cart', {
 		type: DataTypes.INTEGER,
 		allowNull: false,
 	},
+	price: {
+		type: DataTypes.NUMBER,
+		allowNull: false,
+	},
 });
 
 const Order = sequelize.define('Orders', {
@@ -119,12 +123,41 @@ const Order = sequelize.define('Orders', {
 		references: {
 			model: User,
 			key: 'id',
-		}},
-	items: {
-		type: JSONB,
+		},
+	},
+	price: {
+		type: DataTypes.NUMBER,
 		allowNull: false,
-	}}
-)
+	},
+});
+
+const OrderDetail = sequelize.define('OrderDetails', {
+	id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	orderId: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+		references: {
+			model: Order,
+			key: 'id',
+		},
+	},
+	productId: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
+	quantity: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
+	price: {
+		type: DataTypes.NUMBER,
+		allowNull: false,
+	},
+});
 
 sequelize
 	.sync()
@@ -405,7 +438,7 @@ app.put('/api/reviews/:id', verifyToken, async (req, res) => {
 // Add product to cart
 app.post('/api/cart', verifyToken, async (req, res) => {
 	try {
-		const { productId, quantity } = req.body;
+		const { productId, quantity, price } = req.body;
 		const userId = req.userId;
 		const cart = await Cart.findOne({
 			where: {
@@ -422,6 +455,7 @@ app.post('/api/cart', verifyToken, async (req, res) => {
 				userId,
 				productId,
 				quantity,
+				price,
 			});
 		}
 		res.status(201).json(cart);
@@ -484,39 +518,70 @@ app.get('/api/cart', verifyToken, async (req, res) => {
 	}
 });
 
-//Create an order 
-app.put('/api/orders', verifyToken, async(req, res) => {
-	const transaction = await sequelize.transaction();
-	try{
-		const items = await Cart.findAll({ where: { userId: req.userId } }, { transaction });
-		console.log(items)
-		if (items.length === 0) {
-			await transaction.rollback();
-			return res.status(404).send('Cart is empty');
+// Create an order from cart
+app.post('/api/orders', verifyToken, async (req, res) => {
+	try {
+		const userId = req.userId;
+
+		// Fetch the cart items for the user
+		const cartItems = await Cart.findAll({
+			where: {
+				userId,
+			},
+		});
+
+		if (cartItems.length === 0) {
+			return res.status(400).send('Cart is empty');
 		}
 
-		await Cart.destroy({ where: { userId: req.userId } }, { transaction });
+		// Calculate the total price
+		const totalPrice = cartItems.reduce((acc, item) => {
+			const quantity = item.quantity || 0;
+			const price = item.price || 0;
+			return acc + quantity * price;
+		}, 0);
 
-		await transaction.commit();
+		// Create the order
+		const order = await Order.create({
+			userId,
+			price: totalPrice,
+		});
 
-		const order = await Order.create({userId: req.userId, items: items})
-		res.status(200).json(order);
+		// Create orderDetail for each product
+		for (const item of cartItems) {
+			await OrderDetail.create({
+				orderId: order.id,
+				productId: item.productId,
+				quantity: item.quantity,
+				price: item.price,
+			});
+		}
+
+		// Clear the cart
+		await Cart.destroy({
+			where: {
+				userId,
+			},
+		});
+
+		res.status(201).json(order);
 	} catch (error) {
-		await transaction.rollback();
-		console.log(error)
+		console.log(error);
 		res.status(500).send('Internal Server Error');
 	}
-})
+});
 
 //Fetch an order
-app.get('/api/orders', verifyToken, (req,res) => {
-	try{
-		const userId = req.userId
-		const orders = Order.findAll( {where : {
-			userId: userId
-		}})
-		res.status(200).json(orders)
-	}catch(error){
+app.get('/api/orders', verifyToken, (req, res) => {
+	try {
+		const userId = req.userId;
+		const orders = Order.findAll({
+			where: {
+				userId: userId,
+			},
+		});
+		res.status(200).json(orders);
+	} catch (error) {
 		res.status(500).send('Internal Server Error');
 	}
 });

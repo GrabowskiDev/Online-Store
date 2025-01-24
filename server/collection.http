@@ -68,3 +68,9 @@ Content-Type: application/json
 	"rating": 5,
 	"text": "I really like this product"
 }
+
+####################################
+# Add order
+####################################
+POST http://127.0.0.1:3001/api/orders
+Authorization: Bearer {{token}}
