@@ -31,9 +31,13 @@ interface Product {
 
 interface ProductListElementProps {
 	product: Product;
+	onUpdate: () => void;
 }
 
-export default function ProductListElement({ product }: ProductListElementProps) {
+export default function ProductListElement({
+	product,
+	onUpdate,
+}: ProductListElementProps) {
 	const [productAmount, { increment, decrement }] = useCounter(product.quantity, {
 		min: 1,
 		max: 999,
@@ -85,6 +89,11 @@ export default function ProductListElement({ product }: ProductListElementProps)
 		debouncedUpdateCart(productAmount);
 	}, [productAmount, debouncedUpdateCart]);
 
+	const onHandleClick = () => {
+		handleRemove();
+		onUpdate();
+	};
+
 	return (
 		<>
 			<Paper p="md" shadow="xs" w={'100%'}>
@@ -114,7 +123,7 @@ export default function ProductListElement({ product }: ProductListElementProps)
 						<ActionIcon variant="default" size="xl" radius="md" onClick={increment}>
 							<IconPlus color="var(--mantine-color-gray-text)" />
 						</ActionIcon>
-						<CloseButton onClick={handleRemove} />
+						<CloseButton onClick={onHandleClick} />
 					</Group>
 				</Group>
 			</Paper>

@@ -15,13 +15,14 @@ interface Product {
 
 interface ProductListProps {
 	list: Product[];
+	onUpdate: () => void;
 }
 
-export default function ProductList({ list }: ProductListProps) {
+export default function ProductList({ list, onUpdate }: ProductListProps) {
 	return (
 		<Group p="sm">
 			{list.map((product, id) => (
-				<ProductListElement key={id} product={product} />
+				<ProductListElement key={id} product={product} onUpdate={onUpdate} />
 			))}
 		</Group>
 	);

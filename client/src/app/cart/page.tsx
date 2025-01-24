@@ -76,6 +76,43 @@ export default function CartPage() {
 		}
 	};
 
+	const fetchCart = async () => {
+		try {
+			const response = await fetch(`${SERVER_IP}/cart`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			if (!response.ok) {
+				throw new Error('Failed to fetch cart');
+			}
+
+			const data = await response.json();
+
+			if (!Array.isArray(data)) {
+				throw new Error('Cart data is not an array');
+			}
+
+			setCartFetched(true);
+
+			// Fetch product details based on cart items
+			const productPromises = data.map(async (item) => {
+				const productData = await fetchProduct(item.productId, true);
+				return { ...productData, quantity: item.quantity, cartId: item.id };
+			});
+
+			const productsData = await Promise.all(productPromises);
+			setProductList(productsData);
+		} catch (error) {
+			console.log('Error fetching cart:', error);
+			notifications.show({
+				title: 'Error fetching cart',
+				message: 'Error fetching cart',
+				color: 'red',
+			});
+		}
+	};
+
 	useEffect(() => {
 		if (!token && !loading) {
 			notifications.show({
@@ -88,43 +125,6 @@ export default function CartPage() {
 		}
 
 		if (!loading && token && !cartFetched) {
-			const fetchCart = async () => {
-				try {
-					const response = await fetch(`${SERVER_IP}/cart`, {
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					});
-					if (!response.ok) {
-						throw new Error('Failed to fetch cart');
-					}
-
-					const data = await response.json();
-
-					if (!Array.isArray(data)) {
-						throw new Error('Cart data is not an array');
-					}
-
-					setCartFetched(true);
-
-					// Fetch product details based on cart items
-					const productPromises = data.map(async (item) => {
-						const productData = await fetchProduct(item.productId, true);
-						return { ...productData, quantity: item.quantity, cartId: item.id };
-					});
-
-					const productsData = await Promise.all(productPromises);
-					setProductList(productsData);
-				} catch (error) {
-					console.log('Error fetching cart:', error);
-					notifications.show({
-						title: 'Error fetching cart',
-						message: 'Error fetching cart',
-						color: 'red',
-					});
-				}
-			};
-
 			fetchCart();
 		}
 	}, [loading, token, cartFetched, productList, router]);
@@ -141,7 +141,7 @@ export default function CartPage() {
 		<div className={classes.main}>
 			<Container size="lg">
 				<Paper withBorder w={'100%'} mih={'50vh'} mb="lg">
-					<ProductList list={productList} />
+					<ProductList list={productList} onUpdate={fetchCart} />
 				</Paper>
 				<Group justify="space-between" align="center">
 					<Title>Total price: $ {totalPrice.toFixed(2)} </Title>
