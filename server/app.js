@@ -571,13 +571,42 @@ app.post('/api/orders', verifyToken, async (req, res) => {
 	}
 });
 
-//Fetch an order
-app.get('/api/orders', verifyToken, (req, res) => {
+//Fetch all orders
+app.get('/api/orders', verifyToken, async (req, res) => {
 	try {
 		const userId = req.userId;
-		const orders = Order.findAll({
+		const orders = await Order.findAll({
 			where: {
 				userId: userId,
+			},
+		});
+
+		if (!orders) {
+			return res.status(404).send('No orders found');
+		} else {
+			res.status(200).json(orders);
+		}
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+//Fetch an order in details
+app.get('/api/orders/:id', verifyToken, async (req, res) => {
+	try {
+		const userId = req.userId;
+		const order = await Order.findOne({
+			where: {
+				id: req.params.id,
+				userId,
+			},
+		});
+		if (!order) {
+			return res.status(404).send('Order not found');
+		}
+		const orders = await OrderDetail.findAll({
+			where: {
+				orderId: req.params.id,
 			},
 		});
 		res.status(200).json(orders);
