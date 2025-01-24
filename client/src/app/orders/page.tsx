@@ -53,7 +53,7 @@ export default function CartPage() {
 			if (!response.ok) {
 				throw new Error('Failed to place order');
 			}
-			setProductList([]);
+
 			notifications.show({
 				title: 'Order placed successfully',
 				message: 'Your order has been placed successfully',
@@ -61,7 +61,7 @@ export default function CartPage() {
 			});
 
 			// Optionally, you can clear the cart or redirect the user
-			router.push('/');
+			router.push('/orders');
 		} catch (error) {
 			console.log('Error placing order:', error);
 			notifications.show({
@@ -148,6 +148,8 @@ export default function CartPage() {
 						leftSection={<span />}
 						variant="filled"
 						onClick={() => {
+							
+
 							handleBuyNow();
 						}}>
 						BUY NOW

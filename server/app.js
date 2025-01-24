@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes, JSONB } = require('sequelize');
 const app = express();
 const PORT = 3001;
 const bcrypt = require('bcrypt');
@@ -106,6 +106,25 @@ const Cart = sequelize.define('Cart', {
 		allowNull: false,
 	},
 });
+
+const Order = sequelize.define('Orders', {
+	id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	userId: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+		references: {
+			model: User,
+			key: 'id',
+		}},
+	items: {
+		type: JSONB,
+		allowNull: false,
+	}}
+)
 
 sequelize
 	.sync()
@@ -461,6 +480,43 @@ app.get('/api/cart', verifyToken, async (req, res) => {
 			res.status(200).json(cart);
 		}
 	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+//Create an order 
+app.put('/api/orders', verifyToken, async(req, res) => {
+	const transaction = await sequelize.transaction();
+	try{
+		const items = await Cart.findAll({ where: { userId: req.userId } }, { transaction });
+		console.log(items)
+		if (items.length === 0) {
+			await transaction.rollback();
+			return res.status(404).send('Cart is empty');
+		}
+
+		await Cart.destroy({ where: { userId: req.userId } }, { transaction });
+
+		await transaction.commit();
+
+		const order = await Order.create({userId: req.userId, items: items})
+		res.status(200).json(order);
+	} catch (error) {
+		await transaction.rollback();
+		console.log(error)
+		res.status(500).send('Internal Server Error');
+	}
+})
+
+//Fetch an order
+app.get('/api/orders', verifyToken, (req,res) => {
+	try{
+		const userId = req.userId
+		const orders = Order.findAll( {where : {
+			userId: userId
+		}})
+		res.status(200).json(orders)
+	}catch(error){
 		res.status(500).send('Internal Server Error');
 	}
 });
