@@ -52,7 +52,7 @@ export default function ProductPageMenu({
 			});
 		} else {
 			try {
-				const response = await addProductToCart(product.id, value, token);
+				const response = await addProductToCart(product.id, value, token, product.price);
 				if (!response!.ok) {
 					notifications.show({
 						title: 'Error',

@@ -102,7 +102,9 @@ export default function Review({
 					</Avatar>
 					<Title>{username}</Title>
 					<Text size="sm" c="dimmed">
-						{format(new Date(date), 'MMMM dd, yyyy')}
+						{isNaN(new Date(date).getTime())
+							? 'Invalid date'
+							: format(new Date(date), 'MMMM dd, yyyy')}
 					</Text>
 				</Group>
 				{showOptions && (

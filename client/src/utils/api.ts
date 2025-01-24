@@ -29,7 +29,12 @@ async function fetchAllProducts() {
 	}
 }
 
-async function addProductToCart(productId: number, quantity: number, token: string) {
+async function addProductToCart(
+	productId: number,
+	quantity: number,
+	token: string,
+	price: number,
+) {
 	try {
 		const response = await fetch(`${SERVER_IP}/cart`, {
 			method: 'POST',
@@ -37,7 +42,7 @@ async function addProductToCart(productId: number, quantity: number, token: stri
 				'Content-Type': 'application/json',
 				Authorization: `Bearer ${token}`,
 			},
-			body: JSON.stringify({ productId, quantity }),
+			body: JSON.stringify({ productId, quantity, price }),
 		});
 
 		if (!response.ok) {

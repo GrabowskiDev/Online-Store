@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes, JSONB } = require('sequelize');
 const app = express();
 const PORT = 3001;
 const bcrypt = require('bcrypt');
@@ -103,6 +103,58 @@ const Cart = sequelize.define('Cart', {
 	},
 	quantity: {
 		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
+	price: {
+		type: DataTypes.NUMBER,
+		allowNull: false,
+	},
+});
+
+const Order = sequelize.define('Orders', {
+	id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	userId: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+		references: {
+			model: User,
+			key: 'id',
+		},
+	},
+	price: {
+		type: DataTypes.NUMBER,
+		allowNull: false,
+	},
+});
+
+const OrderDetail = sequelize.define('OrderDetails', {
+	id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	orderId: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+		references: {
+			model: Order,
+			key: 'id',
+		},
+	},
+	productId: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
+	quantity: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
+	price: {
+		type: DataTypes.NUMBER,
 		allowNull: false,
 	},
 });
@@ -386,7 +438,7 @@ app.put('/api/reviews/:id', verifyToken, async (req, res) => {
 // Add product to cart
 app.post('/api/cart', verifyToken, async (req, res) => {
 	try {
-		const { productId, quantity } = req.body;
+		const { productId, quantity, price } = req.body;
 		const userId = req.userId;
 		const cart = await Cart.findOne({
 			where: {
@@ -403,6 +455,7 @@ app.post('/api/cart', verifyToken, async (req, res) => {
 				userId,
 				productId,
 				quantity,
+				price,
 			});
 		}
 		res.status(201).json(cart);
@@ -460,6 +513,103 @@ app.get('/api/cart', verifyToken, async (req, res) => {
 		} else {
 			res.status(200).json(cart);
 		}
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+// Create an order from cart
+app.post('/api/orders', verifyToken, async (req, res) => {
+	try {
+		const userId = req.userId;
+
+		// Fetch the cart items for the user
+		const cartItems = await Cart.findAll({
+			where: {
+				userId,
+			},
+		});
+
+		if (cartItems.length === 0) {
+			return res.status(400).send('Cart is empty');
+		}
+
+		// Calculate the total price
+		const totalPrice = cartItems.reduce((acc, item) => {
+			const quantity = item.quantity || 0;
+			const price = item.price || 0;
+			return acc + quantity * price;
+		}, 0);
+
+		// Create the order
+		const order = await Order.create({
+			userId,
+			price: totalPrice,
+		});
+
+		// Create orderDetail for each product
+		for (const item of cartItems) {
+			await OrderDetail.create({
+				orderId: order.id,
+				productId: item.productId,
+				quantity: item.quantity,
+				price: item.price,
+			});
+		}
+
+		// Clear the cart
+		await Cart.destroy({
+			where: {
+				userId,
+			},
+		});
+
+		res.status(201).json(order);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+//Fetch all orders
+app.get('/api/orders', verifyToken, async (req, res) => {
+	try {
+		const userId = req.userId;
+		const orders = await Order.findAll({
+			where: {
+				userId: userId,
+			},
+		});
+
+		if (!orders) {
+			return res.status(404).send('No orders found');
+		} else {
+			res.status(200).json(orders);
+		}
+	} catch (error) {
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+//Fetch an order in details
+app.get('/api/orders/:id', verifyToken, async (req, res) => {
+	try {
+		const userId = req.userId;
+		const order = await Order.findOne({
+			where: {
+				id: req.params.id,
+				userId,
+			},
+		});
+		if (!order) {
+			return res.status(404).send('Order not found');
+		}
+		const orders = await OrderDetail.findAll({
+			where: {
+				orderId: req.params.id,
+			},
+		});
+		res.status(200).json(orders);
 	} catch (error) {
 		res.status(500).send('Internal Server Error');
 	}

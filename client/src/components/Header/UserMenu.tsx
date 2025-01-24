@@ -71,13 +71,7 @@ export function UserMenu({ onLogout }: UserMenuProps) {
 						leftSection={
 							<IconBasketCheck size={16} stroke={1.5} color={theme.colors.blue[6]} />
 						}
-						onClick={() => {
-							notifications.show({
-								title: 'This feature is not implemented yet',
-								color: 'red',
-								message: undefined,
-							});
-						}}>
+						onClick={() => router.push('/orders')}>
 						Orders
 					</Menu.Item>
 					<Menu.Item

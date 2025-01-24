@@ -17,7 +17,7 @@ export default function ProductPreview({ product }: { product: Product }) {
 			});
 		} else {
 			try {
-				const response = await addProductToCart(product.id, 1, token);
+				const response = await addProductToCart(product.id, 1, token, product.price);
 				if (!response!.ok) {
 					notifications.show({
 						title: 'Error',

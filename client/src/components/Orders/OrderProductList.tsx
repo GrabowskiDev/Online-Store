@@ -1,5 +1,5 @@
 import { Group } from '@mantine/core';
-import ProductListElement from './ProductListElement';
+import OrderProductListElement from './OrderProductListElement';
 
 interface Product {
 	id: number;
@@ -15,14 +15,13 @@ interface Product {
 
 interface ProductListProps {
 	list: Product[];
-	onUpdate: () => void;
 }
 
-export default function ProductList({ list, onUpdate }: ProductListProps) {
+export default function OrderProductList({ list }: ProductListProps) {
 	return (
 		<Group p="sm">
 			{list.map((product, id) => (
-				<ProductListElement key={id} product={product} onUpdate={onUpdate} />
+				<OrderProductListElement key={id} product={product} />
 			))}
 		</Group>
 	);
