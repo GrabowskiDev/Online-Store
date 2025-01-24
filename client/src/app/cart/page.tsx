@@ -65,7 +65,7 @@ export default function CartPage() {
 			});
 
 			// Optionally, you can clear the cart or redirect the user
-			// router.push('/');
+			router.push('/');
 		} catch (error) {
 			console.log('Error placing order:', error);
 			notifications.show({

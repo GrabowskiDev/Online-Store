@@ -89,8 +89,8 @@ export default function ProductListElement({
 		debouncedUpdateCart(productAmount);
 	}, [productAmount, debouncedUpdateCart]);
 
-	const onHandleClick = () => {
-		handleRemove();
+	const onHandleClick = async () => {
+		await handleRemove();
 		onUpdate();
 	};
 
